@@ -35,7 +35,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
-    compile 'no.nordicsemi.android.support.v18:scanner:0.1.2'
     compile 'org.altbeacon:android-beacon-library:2.9.2'
     testCompile 'junit:junit:4.12'
 }
