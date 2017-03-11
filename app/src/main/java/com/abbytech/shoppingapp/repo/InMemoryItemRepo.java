@@ -1,8 +1,12 @@
-package com.abbytech.shoppingapp;
+package com.abbytech.shoppingapp.repo;
 
+
+import com.abbytech.shoppingapp.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
 
 public class InMemoryItemRepo implements ItemRepo {
     List<Item> items = new ArrayList<>();
@@ -14,7 +18,7 @@ public class InMemoryItemRepo implements ItemRepo {
     }
 
     @Override
-    public List<Item> getAllItems() {
-        return items;
+    public Observable<List<Item>> getAllItems() {
+        return Observable.just(items);
     }
 }

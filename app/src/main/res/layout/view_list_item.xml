@@ -3,7 +3,7 @@
     <data>
         <variable
             name="item"
-            type="com.abbytech.shoppingapp.ListItem"/>
+            type="com.abbytech.shoppingapp.model.ListItem"/>
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"

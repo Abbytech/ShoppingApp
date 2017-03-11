@@ -30,6 +30,7 @@ public class BeaconService extends Service implements BeaconConsumer{
     @Override
     public void onCreate() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
+        BeaconManager.setRegionExitPeriod(1000);
         LogManager.setVerboseLoggingEnabled(true);
         BeaconParser parser = new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-11,i:12-15,i:16-19,p:24-24");
         beaconManager.getBeaconParsers().add(parser);

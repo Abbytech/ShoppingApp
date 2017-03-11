@@ -1,4 +1,4 @@
-package com.abbytech.shoppingapp;
+package com.abbytech.shoppingapp.model;
 
 
 public class ListItem {

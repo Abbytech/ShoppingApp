@@ -8,6 +8,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.abbytech.shoppingapp.model.ListItem;
+import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.util.ui.SingleFragmentActivity;
 
 import org.altbeacon.beacon.BeaconManager;

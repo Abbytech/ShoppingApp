@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
+import com.abbytech.shoppingapp.model.ListItem;
+import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 
 import java.util.List;
