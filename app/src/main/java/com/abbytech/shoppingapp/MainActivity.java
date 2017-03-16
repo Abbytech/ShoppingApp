@@ -8,8 +8,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.abbytech.shoppingapp.model.ListItem;
-import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.util.ui.SingleFragmentActivity;
 
 import org.altbeacon.beacon.BeaconManager;
@@ -32,11 +30,6 @@ public class MainActivity extends SingleFragmentActivity {
                 @Override
                 public void didExitRegion(Region region) {
                     Log.d(TAG, "didExitRegion");
-                    long uncheckedItemsCount=0;
-                    for (ListItem item: ShoppingList.getItems())
-                        if (!item.isChecked()) uncheckedItemsCount++;
-
-                    if (uncheckedItemsCount!=0) runOnUiThread(MainActivity.this::createAndShowDialog);
                 }
 
                 @Override

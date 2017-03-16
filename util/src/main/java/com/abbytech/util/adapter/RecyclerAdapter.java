@@ -41,31 +41,30 @@ abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
     public void setItemList(List<T> objects) {
         this.objects = objects;
         if (objects instanceof ObservableList)
-            ((ObservableList) objects)
+            ((ObservableList<T>) objects)
                     .addOnListChangedCallback(new ObservableListCallback(this));
         notifyDataSetChanged();
     }
 
     public void clear() {
         objects.clear();
-        notifyDataSetChanged();
     }
 
     public void addAll(Collection<T> items) {
         objects.addAll(items);
-        notifyDataSetChanged();
     }
 
     public void add(T item){
         objects.add(item);
-        notifyDataSetChanged();
     }
 
     public void remove(T item){
         objects.remove(item);
-        notifyDataSetChanged();
     }
 
+    public void set(int index,T item){
+        objects.set(index,item);
+    }
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
         VH viewHolder = doCreateViewHolder(parent, viewType);
