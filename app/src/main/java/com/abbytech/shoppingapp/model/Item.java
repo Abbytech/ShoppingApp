@@ -1,5 +1,7 @@
 package com.abbytech.shoppingapp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -7,8 +9,11 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Item {
     @Id(autoincrement = true)
+    @SerializedName("item_ID")
     private Long id;
+    @SerializedName("item_NAME")
     private String name;
+    @SerializedName("section_ID")
     private String aisle;
     public Item(String name, String aisle) {
         this.name = name;

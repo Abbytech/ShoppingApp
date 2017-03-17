@@ -49,7 +49,7 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment getFragment() {
-        return new ShoppingListFragment();
+        return new NavigationFragment();
     }
 
     @Override
