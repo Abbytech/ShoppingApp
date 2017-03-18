@@ -5,7 +5,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.model.DaoMaster;
-import com.abbytech.shoppingapp.repo.InMemoryItemRepo;
+import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.repo.ItemRepo;
 import com.abbytech.shoppingapp.shop.ShopAPI;
 import com.abbytech.shoppingapp.shop.ShopRepo;
@@ -21,7 +21,7 @@ import retrofit2.Retrofit;
 public class ShoppingApp extends Application {
     private static final String TAG = "ShoppingApp";
     private static ShoppingApp instance;
-    private DaoMaster daoMaster;
+    private DaoSession daoMaster;
     private ItemRepo itemRepo;
     private Retrofit retrofit;
 
@@ -33,8 +33,8 @@ public class ShoppingApp extends Application {
         instance = this;
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "shopping-db");
         Database db = helper.getWritableDb();
-        daoMaster = new DaoMaster(db);
-        itemRepo = InMemoryItemRepo.getInstance();
+        daoMaster = new DaoMaster(db).newSession();
+        itemRepo = null;
         retrofit = createRetrofit();
         shopRepo = new ShopRepo(retrofit.create(ShopAPI.class));
     }
@@ -64,7 +64,7 @@ public class ShoppingApp extends Application {
     public static ShoppingApp getInstance(){
         return instance;
     }
-    public DaoMaster getDao(){
+    public DaoSession getDao(){
         return daoMaster;
     }
 }

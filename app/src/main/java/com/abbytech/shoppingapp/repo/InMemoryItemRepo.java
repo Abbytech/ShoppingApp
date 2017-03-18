@@ -16,7 +16,7 @@ public class InMemoryItemRepo implements ItemRepo {
     private final ItemDao itemDao;
 
     public InMemoryItemRepo() {
-        itemDao = ShoppingApp.getInstance().getDao().newSession().getItemDao();
+        itemDao = ShoppingApp.getInstance().getDao().getItemDao();
         if (itemDao.load(1L)==null) {
             List<Item> items = new ArrayList<>();
             items.add(new Item("Cheese", "Dairy"));

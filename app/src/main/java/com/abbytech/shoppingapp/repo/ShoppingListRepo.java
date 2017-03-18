@@ -5,7 +5,6 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 
 import com.abbytech.shoppingapp.ShoppingApp;
-import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ListItemDao;
@@ -26,17 +25,17 @@ public class ShoppingListRepo implements IShoppingListRepo {
         return ourInstance;
     }
 
-    private ShoppingListRepo(DaoMaster master) {
-        daoSession = master.newSession();
+    private ShoppingListRepo(DaoSession session) {
+        daoSession = session;
         if (daoSession.getShoppingListDao().load(shoppingListId)==null) {
             ShoppingList shoppingList = new ShoppingList("Groceries");
             shoppingListId = daoSession.insert(shoppingList);
         }
     }
-
-    public void saveShoppingItem(ListItem item){
+    @Override
+    public void saveShoppingItem(ListItem listItem){
         ListItemDao listItemDao = daoSession.getListItemDao();
-        listItemDao.save(item);
+        listItemDao.save(listItem);
     }
     @Override
     public Observable<ShoppingList> getShoppingList(int id) {

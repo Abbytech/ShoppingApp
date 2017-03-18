@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.abbytech.shoppingapp.shop.ShopFragment;
+import com.abbytech.shoppingapp.shoppinglist.ShopActionFragment;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class NavigationFragment extends Fragment {
     static{
         fragmentMap = new android.support.v4.util.ArrayMap<>();
         fragmentMap.put(R.id.navigation_home,ShoppingListFragment.class);
-        fragmentMap.put(R.id.navigation_dashboard, ShopFragment.class);
+        fragmentMap.put(R.id.navigation_dashboard, ShopActionFragment.class);
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
