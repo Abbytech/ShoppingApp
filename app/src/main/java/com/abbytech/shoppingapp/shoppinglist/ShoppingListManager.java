@@ -29,7 +29,7 @@ public class ShoppingListManager implements OnItemActionListener{
                 ListItem listItem = new ListItem(item,shoppingList);
                 itemDao.insertOrReplace(item);
                 repo.saveShoppingItem(listItem);
-                shoppingList.getItems().add(listItem);
+                shoppingList.resetItems();
                 break;
         }
     }
