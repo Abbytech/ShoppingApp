@@ -18,6 +18,7 @@ import com.abbytech.shoppingapp.repo.ItemRepo;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class ShopFragment extends Fragment implements ItemActionEmitter {
@@ -49,9 +50,23 @@ public class ShopFragment extends Fragment implements ItemActionEmitter {
         adapter = new ShopItemAdapter(null);
         adapter.setOnItemActionListener(listener);
         recyclerView.setAdapter(adapter);
-        Observable<List<Item>> listObservable = shopRepo.getAllItems();
-        listObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(items -> adapter.setItemList(items));
-        listObservable.doOnError(throwable -> Toast.makeText(getActivity(), "error in getting item list",
-                Toast.LENGTH_SHORT).show());
+        Observable<List<Item>> listObservable = shopRepo.getAllItems().observeOn(AndroidSchedulers.mainThread());
+        listObservable.subscribe(new Subscriber<List<Item>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getActivity(), "error in getting item list",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(List<Item> items) {
+                adapter.setItemList(items);
+            }
+        });
     }
 }
