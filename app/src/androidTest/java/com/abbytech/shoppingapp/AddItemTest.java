@@ -21,16 +21,17 @@ import java.util.List;
 public class AddItemTest {
     private ShoppingListManager manager;
     private ShoppingList list;
+    private LocalShoppingListRepo repo;
 
     @Before
     public void setUp() throws Exception {
-        LocalShoppingListRepo repo = LocalShoppingListRepo.getInstance();
+        repo = new LocalShoppingListRepo(ShoppingApp.getInstance().getDao());
         list = getShoppingList();
-        manager = new ShoppingListManager(listener -> {}, repo,() -> list, ShoppingApp.getInstance().getDao().getItemDao());
+        manager = new ShoppingListManager(listener -> {}, repo,() -> list);
     }
 
     private ShoppingList getShoppingList() {
-        return LocalShoppingListRepo.getInstance().getShoppingList(1).toBlocking().first();
+        return repo.getShoppingList(1).toBlocking().first();
     }
 
     @Test

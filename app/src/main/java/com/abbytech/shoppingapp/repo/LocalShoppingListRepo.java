@@ -7,7 +7,6 @@ import android.databinding.ObservableList;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
-import com.abbytech.shoppingapp.model.ListItemDao;
 import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.shoppingapp.model.ShoppingListDao;
 
@@ -24,8 +23,8 @@ public class LocalShoppingListRepo implements IShoppingListRepo {
     }
     @Override
     public void saveShoppingItem(ListItem listItem){
-        ListItemDao listItemDao = daoSession.getListItemDao();
-        listItemDao.save(listItem);
+        daoSession.getItemDao().insertOrReplace(listItem.getItem());
+        daoSession.getListItemDao().insertOrReplace(listItem);
     }
     @Override
     public Observable<ShoppingList> getShoppingList(int id) {

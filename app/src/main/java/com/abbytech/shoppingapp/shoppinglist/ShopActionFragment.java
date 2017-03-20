@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.ShoppingApp;
-import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import com.abbytech.shoppingapp.shop.ShopFragment;
 
 public class ShopActionFragment extends Fragment {
@@ -26,9 +25,9 @@ public class ShopActionFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ShopFragment shopFragment = new ShopFragment();
-        manager = new ShoppingListManager(shopFragment, LocalShoppingListRepo.getInstance(),
-                () -> LocalShoppingListRepo.getInstance().getShoppingList(1).toBlocking().first(),
-                ShoppingApp.getInstance().getDao().getItemDao());
+        ShoppingListRepo shoppingListRepo = ShoppingApp.getInstance().getShoppingListRepo();
+        manager = new ShoppingListManager(shopFragment, shoppingListRepo,
+                () -> shoppingListRepo.getShoppingList(1).toBlocking().first());
         getChildFragmentManager().beginTransaction().replace(R.id.fragment, shopFragment).commit();
     }
 }
