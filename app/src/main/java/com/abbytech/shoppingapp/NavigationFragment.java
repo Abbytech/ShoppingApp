@@ -18,8 +18,8 @@ public class NavigationFragment extends Fragment {
     private static Map<Integer,Class<? extends Fragment>> fragmentMap;
     static{
         fragmentMap = new android.support.v4.util.ArrayMap<>();
-        fragmentMap.put(R.id.navigation_home,ShoppingListFragment.class);
-        fragmentMap.put(R.id.navigation_dashboard, ShopActionFragment.class);
+        fragmentMap.put(R.id.navigation_shopping_list,ShoppingListFragment.class);
+        fragmentMap.put(R.id.navigation_shop, ShopActionFragment.class);
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -47,5 +47,7 @@ public class NavigationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        MenuItem item = navigation.getMenu().findItem(R.id.navigation_shopping_list);
+        mOnNavigationItemSelectedListener.onNavigationItemSelected(item);
     }
 }
