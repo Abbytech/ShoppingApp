@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
 import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ShoppingList;
-import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 
 import java.util.List;
@@ -37,11 +36,11 @@ public class ShoppingListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list_recycler);
         adapter = new ShoppingListAdapter(null);
-        loadShoppingList(0);
+        loadShoppingList(1);
         recyclerView.setAdapter(adapter);
     }
     public void loadShoppingList(int id) {
-        Observable<ShoppingList> shoppingListObservable = LocalShoppingListRepo.getInstance()
+        Observable<ShoppingList> shoppingListObservable = ShoppingApp.getInstance().getShoppingListRepo()
                 .getShoppingList(id);
         shoppingListObservable.doOnError(throwable ->
                 Toast.makeText(getActivity(), "Error while getting list", Toast.LENGTH_SHORT).show());

@@ -2,6 +2,7 @@ package com.abbytech.shoppingapp.model;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
@@ -74,19 +75,22 @@ public class ListItem {
     }
 
     /** To-one relationship, resolved on first access. */
+    @Keep
     @Generated(hash = 1430130750)
     public Item getItem() {
         Long __key = this.itemId;
-        if (item__resolvedKey == null || !item__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            ItemDao targetDao = daoSession.getItemDao();
-            Item itemNew = targetDao.load(__key);
-            synchronized (this) {
-                item = itemNew;
-                item__resolvedKey = __key;
+        if (item==null) {
+            if (item__resolvedKey == null || !item__resolvedKey.equals(__key)) {
+                final DaoSession daoSession = this.daoSession;
+                if (daoSession == null) {
+                    throw new DaoException("Entity is detached from DAO context");
+                }
+                ItemDao targetDao = daoSession.getItemDao();
+                Item itemNew = targetDao.load(__key);
+                synchronized (this) {
+                    item = itemNew;
+                    item__resolvedKey = __key;
+                }
             }
         }
         return item;

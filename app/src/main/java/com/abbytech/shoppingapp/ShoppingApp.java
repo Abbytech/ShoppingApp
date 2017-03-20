@@ -7,8 +7,12 @@ import android.util.Log;
 import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.repo.ItemRepo;
+import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import com.abbytech.shoppingapp.shop.ShopAPI;
 import com.abbytech.shoppingapp.shop.ShopRepo;
+import com.abbytech.shoppingapp.shoppinglist.RemoteShoppingListRepo;
+import com.abbytech.shoppingapp.shoppinglist.ShoppingListAPI;
+import com.abbytech.shoppingapp.shoppinglist.ShoppingListRepo;
 import com.abbytech.shoppingapp.util.PropertiesLoader;
 
 import org.greenrobot.greendao.database.Database;
@@ -27,6 +31,8 @@ public class ShoppingApp extends Application {
 
     private ShopRepo shopRepo;
 
+    private ShoppingListRepo shoppingListRepo;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,6 +43,8 @@ public class ShoppingApp extends Application {
         itemRepo = null;
         retrofit = createRetrofit();
         shopRepo = new ShopRepo(retrofit.create(ShopAPI.class));
+        shoppingListRepo = new ShoppingListRepo(new RemoteShoppingListRepo(retrofit.create(ShoppingListAPI.class)),
+        new LocalShoppingListRepo(daoMaster));
     }
 
     private Retrofit createRetrofit() {
@@ -59,6 +67,10 @@ public class ShoppingApp extends Application {
 
     public ShopRepo getShopRepo() {
         return shopRepo;
+    }
+
+    public ShoppingListRepo getShoppingListRepo() {
+        return shoppingListRepo;
     }
 
     public static ShoppingApp getInstance(){
