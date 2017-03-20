@@ -14,18 +14,18 @@ import java.util.List;
 
 import rx.Observable;
 
-public class ShoppingListRepo implements IShoppingListRepo {
-    private static ShoppingListRepo ourInstance;
+public class LocalShoppingListRepo implements IShoppingListRepo {
+    private static LocalShoppingListRepo ourInstance;
     private final DaoSession daoSession;
     private long shoppingListId = 1;
 
-    public static ShoppingListRepo getInstance() {
+    public static LocalShoppingListRepo getInstance() {
         if (ourInstance==null)
-            ourInstance = new ShoppingListRepo(ShoppingApp.getInstance().getDao());
+            ourInstance = new LocalShoppingListRepo(ShoppingApp.getInstance().getDao());
         return ourInstance;
     }
 
-    private ShoppingListRepo(DaoSession session) {
+    private LocalShoppingListRepo(DaoSession session) {
         daoSession = session;
         if (daoSession.getShoppingListDao().load(shoppingListId)==null) {
             ShoppingList shoppingList = new ShoppingList("Groceries");

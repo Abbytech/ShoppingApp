@@ -27,8 +27,9 @@ public class ShoppingListManager implements OnItemActionListener{
         switch (action) {
             case OnItemActionListener.ACTION_ADD:
                 ListItem listItem = new ListItem(item,shoppingList);
-                itemDao.save(item);
+                itemDao.insertOrReplace(item);
                 repo.saveShoppingItem(listItem);
+                shoppingList.getItems().add(listItem);
                 break;
         }
     }
