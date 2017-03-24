@@ -1,4 +1,4 @@
-package com.abbytech.shoppingapp;
+package com.abbytech.shoppingapp.beacon;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,14 +10,13 @@ import android.util.Log;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.logging.LogManager;
 
 public class BeaconService extends Service implements BeaconConsumer{
     private static final String TAG = "test";
-    private final Identifier venueID = Identifier.parse("0xfffffffefffffffe");
-    private final Region diaryRegion = new Region("Diary", venueID, Identifier.parse("0x00000000"), null);
+    private final Region diaryRegion = RegionFactory.createRegion("Dairy","0x00000000");
+    private final Region bakeryRegion = RegionFactory.createRegion("Bakery","0x11111111");
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
     public BeaconService() {
@@ -30,24 +29,26 @@ public class BeaconService extends Service implements BeaconConsumer{
     @Override
     public void onCreate() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
-        BeaconManager.setRegionExitPeriod(1000);
         LogManager.setVerboseLoggingEnabled(true);
-        BeaconParser parser = new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-11,i:12-15,i:16-19,p:24-24");
-        beaconManager.getBeaconParsers().add(parser);
         beaconManager.bind(this);
     }
 
+    public static void setupBeaconManager(BeaconManager beaconManager){
+        BeaconManager.setRegionExitPeriod(1000);
+        BeaconParser parser = new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-11,i:12-15,i:16-19,p:24-24");
+        beaconManager.getBeaconParsers().add(parser);
+    }
     @Override
     public void onDestroy() {
-        super.onDestroy();
         beaconManager.unbind(this);
     }
     @Override
     public void onBeaconServiceConnect() {
         Log.d(TAG, "onBeaconServiceConnect: connected");
-
+        setupBeaconManager(beaconManager);
         try {
             beaconManager.startMonitoringBeaconsInRegion(diaryRegion);
+            beaconManager.startMonitoringBeaconsInRegion(bakeryRegion);
         } catch (RemoteException e) {
             Log.e(TAG, "onBeaconServiceConnect: ", e);
         }

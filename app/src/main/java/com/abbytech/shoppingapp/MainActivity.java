@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.abbytech.shoppingapp.beacon.BeaconService;
 import com.abbytech.util.ui.SingleFragmentActivity;
 
 import org.altbeacon.beacon.BeaconManager;
@@ -16,6 +17,7 @@ import org.altbeacon.beacon.Region;
 
 public class MainActivity extends SingleFragmentActivity {
     private static final String TAG = "test";
+    final Object dialogLock = new Object();
     private final ServiceConnection beaconServiceConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -25,11 +27,13 @@ public class MainActivity extends SingleFragmentActivity {
                 @Override
                 public void didEnterRegion(Region region) {
                     Log.d(TAG, "didEnterRegion");
+                    runOnUiThread(() -> createAndShowDialog(region.getUniqueId()));
                 }
 
                 @Override
                 public void didExitRegion(Region region) {
                     Log.d(TAG, "didExitRegion");
+                    runOnUiThread(MainActivity.this::dismissDialog);
                 }
 
                 @Override
@@ -63,11 +67,21 @@ public class MainActivity extends SingleFragmentActivity {
         unbindService(beaconServiceConn);
     }
 
-    private void createAndShowDialog() {
-        dialog = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("You missed some items")
-                .setMessage("You left the aisle without picking up some of your shopping items")
-                .setIcon(android.R.drawable.ic_dialog_alert).create();
-        dialog.show();
+    private void dismissDialog(){
+        if (dialog!=null) {
+            synchronized (dialogLock){
+                dialog.dismiss();
+            }
+        }
+    }
+    private void createAndShowDialog(String title) {
+        synchronized (dialogLock) {
+            if (dialog!=null) dialog.dismiss();
+            dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(title)
+                    .setMessage("You left the aisle without picking up some of your shopping items")
+                    .setIcon(android.R.drawable.ic_dialog_alert).create();
+            dialog.show();
+        }
     }
 }

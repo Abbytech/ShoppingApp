@@ -24,7 +24,7 @@
         </activity>
 
         <service
-            android:name=".BeaconService"
+            android:name=".beacon.BeaconService"
             android:enabled="true"
             android:exported="false">
         </service>
