@@ -20,6 +20,8 @@ import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ShoppingListFragment extends Fragment {
     private ShoppingListAdapter adapter;
@@ -42,9 +44,23 @@ public class ShoppingListFragment extends Fragment {
     public void loadShoppingList(int id) {
         Observable<ShoppingList> shoppingListObservable = ShoppingApp.getInstance().getShoppingListRepo()
                 .getShoppingList(id);
-        shoppingListObservable.doOnError(throwable ->
-                Toast.makeText(getActivity(), "Error while getting list", Toast.LENGTH_SHORT).show());
-        shoppingListObservable.subscribe(this::setShoppingList);
+        shoppingListObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ShoppingList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getActivity(), "Error while getting list", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(ShoppingList shoppingList) {
+                setShoppingList(shoppingList);
+            }
+        });
     }
 
     public void setShoppingList(ShoppingList list) {
