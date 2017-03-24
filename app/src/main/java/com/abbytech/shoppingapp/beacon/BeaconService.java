@@ -13,10 +13,10 @@ import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.logging.LogManager;
 
+import java.io.IOException;
+
 public class BeaconService extends Service implements BeaconConsumer {
     private static final String TAG = "test";
-    private final Region diaryRegion = RegionFactory.createRegion("Dairy", "0x00000000");
-    private final Region bakeryRegion = RegionFactory.createRegion("Bakery", "0x11111111");
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
 
@@ -51,9 +51,11 @@ public class BeaconService extends Service implements BeaconConsumer {
         BeaconServiceOptions beaconServiceOptions = BeaconServiceOptions.fromResources(this);
         setupBeaconManager(beaconManager, beaconServiceOptions);
         try {
-            beaconManager.startMonitoringBeaconsInRegion(diaryRegion);
-            beaconManager.startMonitoringBeaconsInRegion(bakeryRegion);
-        } catch (RemoteException e) {
+            Region[] regions = RegionFactory.getRegionsFromResources(this);
+            for (Region region : regions) {
+                beaconManager.startMonitoringBeaconsInRegion(region);
+            }
+        } catch (RemoteException | IOException e) {
             Log.e(TAG, "onBeaconServiceConnect: ", e);
         }
     }
