@@ -18,6 +18,8 @@ import org.altbeacon.beacon.Region;
 public class MainActivity extends SingleFragmentActivity {
     private static final String TAG = "test";
     final Object dialogLock = new Object();
+    private BeaconManager beaconManager;
+    private AlertDialog dialog;
     private final ServiceConnection beaconServiceConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -27,13 +29,13 @@ public class MainActivity extends SingleFragmentActivity {
                 @Override
                 public void didEnterRegion(Region region) {
                     Log.d(TAG, "didEnterRegion");
-                    runOnUiThread(() -> createAndShowDialog(region.getUniqueId()));
+                    runOnUiThread(MainActivity.this::dismissDialog);
                 }
 
                 @Override
                 public void didExitRegion(Region region) {
                     Log.d(TAG, "didExitRegion");
-                    runOnUiThread(MainActivity.this::dismissDialog);
+                    runOnUiThread(() -> createAndShowDialog(region.getUniqueId()));
                 }
 
                 @Override
@@ -48,8 +50,6 @@ public class MainActivity extends SingleFragmentActivity {
             beaconManager.removeAllMonitorNotifiers();
         }
     };
-    private BeaconManager beaconManager;
-    private  AlertDialog dialog;
 
     @Override
     protected Fragment getFragment() {
