@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="exit_period">3000</integer>
+    <string name="beacon_layout">m:2-3=0215,i:4-11,i:12-15,i:16-19,p:24-24</string>
+</resources>
