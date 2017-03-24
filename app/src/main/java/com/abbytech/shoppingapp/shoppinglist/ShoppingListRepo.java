@@ -9,6 +9,7 @@ import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 
 public class ShoppingListRepo implements IShoppingListRepo {
     private RemoteShoppingListRepo remoteShoppingListRepo;
@@ -28,7 +29,22 @@ public class ShoppingListRepo implements IShoppingListRepo {
         }
         else{
             shoppingListObservable = remoteShoppingListRepo.getShoppingList(id);
-            shoppingListObservable.subscribe(shoppingList -> localShoppingListRepo.createShoppingList(shoppingList));
+            shoppingListObservable.subscribe(new Subscriber<ShoppingList>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ShoppingList shoppingList) {
+                    localShoppingListRepo.createShoppingList(shoppingList);
+                }
+            });
         }
         return shoppingListObservable;
     }
