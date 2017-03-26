@@ -1,21 +1,21 @@
 package com.abbytech.shoppingapp;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.beacon.BeaconService;
-import com.abbytech.util.ui.SingleFragmentActivity;
+import com.abbytech.util.ui.SupportSingleFragmentActivity;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
-public class MainActivity extends SingleFragmentActivity {
+public class MainActivity extends SupportSingleFragmentActivity {
     private static final String TAG = "test";
     final Object dialogLock = new Object();
     private BeaconManager beaconManager;
