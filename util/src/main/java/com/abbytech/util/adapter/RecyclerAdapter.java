@@ -43,7 +43,7 @@ abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         if (objects instanceof ObservableList)
             ((ObservableList<T>) objects)
                     .addOnListChangedCallback(new ObservableListCallback(this));
-        notifyDataSetChanged();
+        if (objects != null) notifyItemRangeInserted(0, objects.size());
     }
 
     public void clear() {

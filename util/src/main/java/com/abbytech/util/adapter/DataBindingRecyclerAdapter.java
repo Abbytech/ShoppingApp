@@ -27,17 +27,21 @@ public abstract class DataBindingRecyclerAdapter<T> extends
     @Override
     public void onBindViewHolder(DataBindingViewHolder holder, int position) {
         T item = getItem(position);
-        holder.binding.setVariable(getDataBindingVariableId(position), item);
+        holder.getBinding().setVariable(getDataBindingVariableId(position), item);
     }
 
     protected abstract int getDataBindingVariableId(int position);
 
     public static class DataBindingViewHolder extends RecyclerView.ViewHolder {
-        ViewDataBinding binding;
+        private ViewDataBinding binding;
 
         public DataBindingViewHolder(View itemView, ViewDataBinding binding) {
             super(itemView);
             this.binding = binding;
+        }
+
+        public ViewDataBinding getBinding() {
+            return binding;
         }
     }
 }

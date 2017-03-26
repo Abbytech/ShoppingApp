@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="drawable_aisle">
+        <item>@drawable/ic_furniture</item>
+        <item>@drawable/ic_milk</item>
+        <item>@drawable/ic_tomato</item>
+    </array>
+    <string-array name="name_aisle">
+        <item>Furniture</item>
+        <item>Dairy</item>
+        <item>Fresh produce</item>
+    </string-array>
+</resources>
