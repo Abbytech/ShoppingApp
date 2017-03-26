@@ -1,9 +1,9 @@
 package com.abbytech.shoppingapp.shop;
 
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.ShoppingApp;
+import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.repo.ItemRepo;
 
@@ -21,10 +23,10 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class ShopFragment extends Fragment implements ItemActionEmitter {
+public class ShopFragment extends Fragment implements ItemActionEmitter<Item> {
     private ShopItemAdapter adapter;
     private ItemRepo shopRepo;
-    private OnItemActionListener listener;
+    private OnItemActionListener<Item> listener;
 
     @Nullable
     @Override
@@ -38,7 +40,7 @@ public class ShopFragment extends Fragment implements ItemActionEmitter {
         shopRepo = ShoppingApp.getInstance().getShopRepo();
     }
 
-    public void setOnItemActionListener(OnItemActionListener listener) {
+    public void setOnItemActionListener(OnItemActionListener<Item> listener) {
         this.listener = listener;
         if (adapter != null) adapter.setOnItemActionListener(this.listener);
     }

@@ -9,21 +9,24 @@ import android.view.ViewGroup;
 import com.abbytech.shoppingapp.BR;
 import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.databinding.ViewShopItemAddableBinding;
+import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 
 import java.util.List;
 
-import static com.abbytech.shoppingapp.shop.OnItemActionListener.ACTION_ADD;
+import static com.abbytech.shoppingapp.shop.OnShopItemActionListener.ACTION_ADD;
 
-class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> {
-    private OnItemActionListener listener;
+class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> implements ItemActionEmitter<Item> {
+    private OnItemActionListener<Item> listener;
 
     public ShopItemAdapter(List<Item> objects) {
         super(objects);
     }
 
-    public void setOnItemActionListener(OnItemActionListener listener){
+    @Override
+    public void setOnItemActionListener(OnItemActionListener<Item> listener) {
         this.listener = listener;
     }
     @Override

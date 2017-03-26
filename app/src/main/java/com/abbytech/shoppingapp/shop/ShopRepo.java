@@ -19,4 +19,8 @@ public class ShopRepo implements ItemRepo {
     public Observable<List<Item>> getAllItems() {
         return api.getItems();
     }
+
+    public Observable<List<Item>> getAllItems(String section) {
+        return api.getItems(section);
+    }
 }
