@@ -57,6 +57,11 @@ public class MainActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void setLayout() {
+        setContentView(R.layout.activity_main);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         bindService(new Intent(getApplicationContext(), BeaconService.class), beaconServiceConn,BIND_AUTO_CREATE);
