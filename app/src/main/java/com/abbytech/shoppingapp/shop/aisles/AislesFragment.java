@@ -14,6 +14,8 @@ import android.widget.ImageView;
 
 import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.databinding.LayoutSectionBinding;
+import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 import com.android.databinding.library.baseAdapters.BR;
 
@@ -22,9 +24,12 @@ import java.util.List;
 import jp.wasabeef.recyclerview.animators.ScaleInBottomAnimator;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class AislesFragment extends Fragment {
+import static com.abbytech.shoppingapp.shop.OnAisleActionListener.ACTION_SELECTED;
+
+public class AislesFragment extends Fragment implements ItemActionEmitter<Aisle> {
 
     private AisleAdapter adapter;
+    private OnItemActionListener<Aisle> listener;
 
     @Nullable
     @Override
@@ -42,9 +47,20 @@ public class AislesFragment extends Fragment {
         layoutManager.setOrientation(StaggeredGridLayoutManager.VERTICAL);
         layoutManager.setSpanCount(2);
         adapter = new AisleAdapter(null);
+        setAdapterListener();
         recyclerView.setAdapter(adapter);
         AisleRepo repo = new AisleRepo(getActivity());
         repo.getAisles().observeOn(AndroidSchedulers.mainThread()).subscribe(aisles -> adapter.setItemList(aisles));
+    }
+
+    @Override
+    public void setOnItemActionListener(OnItemActionListener<Aisle> listener) {
+        this.listener = listener;
+        if (adapter != null) setAdapterListener();
+    }
+
+    private void setAdapterListener() {
+        adapter.setOnItemClickListener(item -> listener.onItemAction(item, ACTION_SELECTED));
     }
 
     class AisleAdapter extends DataBindingRecyclerAdapter<Aisle> {

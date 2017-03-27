@@ -25,6 +25,8 @@ public class NavigationFragment extends Fragment {
         fragmentMap.put(R.id.navigation_shopping_list,ShoppingListFragment.class);
         fragmentMap.put(R.id.navigation_shop, AislesFragment.class);
     }
+
+    private OnFragmentNavigateListener listener;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -32,13 +34,19 @@ public class NavigationFragment extends Fragment {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Class<? extends Fragment> fragment = fragmentMap.get(item.getItemId());
             try {
-                getChildFragmentManager().beginTransaction().replace(R.id.content,fragment.newInstance()).commit();
+                Fragment instance = fragment.newInstance();
+                getChildFragmentManager().beginTransaction().replace(R.id.content, instance).commit();
+                if (listener != null) listener.onFragmentNavigated(instance);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return true;
         }
     };
+
+    public void setListener(OnFragmentNavigateListener listener) {
+        this.listener = listener;
+    }
 
     @Nullable
     @Override
@@ -68,5 +76,9 @@ public class NavigationFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    public interface OnFragmentNavigateListener {
+        void onFragmentNavigated(Fragment fragment);
     }
 }

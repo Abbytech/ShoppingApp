@@ -6,17 +6,33 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.beacon.BeaconService;
+import com.abbytech.shoppingapp.framework.ActionController;
+import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.framework.OnItemActionListener;
+import com.abbytech.shoppingapp.shop.aisles.AislesController;
+import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
 public class MainActivity extends SupportSingleFragmentActivity {
     private static final String TAG = "test";
+    private static final Map<Class<? extends Fragment>, Class<? extends ActionController>>
+            fragmentActionListenerMap = new ArrayMap<>();
+
+    static {
+        fragmentActionListenerMap.put(AislesFragment.class, AislesController.class);
+    }
+
     final Object dialogLock = new Object();
     private BeaconManager beaconManager;
     private AlertDialog dialog;
@@ -50,10 +66,40 @@ public class MainActivity extends SupportSingleFragmentActivity {
             beaconManager.removeAllMonitorNotifiers();
         }
     };
+    private NavigationFragment navigationFragment;
+
+    @Override
+    public void onBackPressed() {
+        android.support.v4.app.FragmentManager fragmentManager =
+                navigationFragment.getChildFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() == 0)
+            super.onBackPressed();
+        else {
+            fragmentManager.popBackStack();
+        }
+    }
 
     @Override
     protected Fragment getFragment() {
-        return new NavigationFragment();
+        navigationFragment = new NavigationFragment();
+        navigationFragment.setListener(fragment -> {
+            Class<? extends OnItemActionListener> itemActionListener = fragmentActionListenerMap.get(fragment.getClass());
+            try {
+                if (itemActionListener != null) {
+                    OnItemActionListener instance = itemActionListener.getConstructor(Fragment.class).newInstance(fragment);
+                    ((ItemActionEmitter) fragment).setOnItemActionListener(instance);
+                }
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+        return navigationFragment;
     }
 
     @Override
