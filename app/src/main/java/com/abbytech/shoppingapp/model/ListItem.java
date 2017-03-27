@@ -1,5 +1,7 @@
 package com.abbytech.shoppingapp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
@@ -11,10 +13,12 @@ import org.greenrobot.greendao.DaoException;
 public class ListItem {
     @Id(autoincrement = true)
     private Long id;
+    @SerializedName("item_ID")
     private Long itemId;
     @ToOne(joinProperty = "itemId")
     private Item item;
     private Long shoppingListId;
+    @SerializedName("checked_item")
     private boolean checked = false;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -40,10 +44,6 @@ public class ListItem {
 
     @Generated(hash = 1919990123)
     public ListItem() {
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
     }
 
     public boolean isChecked() {
@@ -106,6 +106,14 @@ public class ListItem {
         }
     }
 
+    public Long getItemId() {
+        return this.itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -140,10 +148,6 @@ public class ListItem {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
-    }
-
-    public Long getItemId() {
-        return this.itemId;
     }
 
     /** called by internal mechanisms, do not call yourself. */

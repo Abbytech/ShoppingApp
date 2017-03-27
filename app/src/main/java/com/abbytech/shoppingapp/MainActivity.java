@@ -13,6 +13,9 @@ import com.abbytech.shoppingapp.beacon.BeaconService;
 import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
+import com.abbytech.shoppingapp.framework.ShoppingListController;
+import com.abbytech.shoppingapp.model.Beacon;
+import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.shop.aisles.AislesController;
 import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
@@ -24,6 +27,8 @@ import org.altbeacon.beacon.Region;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import rx.android.schedulers.AndroidSchedulers;
+
 public class MainActivity extends SupportSingleFragmentActivity {
     private static final String TAG = "test";
     private static final Map<Class<? extends Fragment>, Class<? extends ActionController>>
@@ -31,6 +36,7 @@ public class MainActivity extends SupportSingleFragmentActivity {
 
     static {
         fragmentActionListenerMap.put(AislesFragment.class, AislesController.class);
+        fragmentActionListenerMap.put(ShoppingListFragment.class, ShoppingListController.class);
     }
 
     final Object dialogLock = new Object();
@@ -51,7 +57,19 @@ public class MainActivity extends SupportSingleFragmentActivity {
                 @Override
                 public void didExitRegion(Region region) {
                     Log.d(TAG, "didExitRegion");
-                    runOnUiThread(() -> createAndShowDialog(region.getUniqueId()));
+                    ShoppingApp.getInstance()
+                            .getLocationAPI()
+                            .onExitLocation(new Beacon(region.getId2().toHexString().substring(2)))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .filter(listItems -> !listItems.isEmpty())
+                            .subscribe(listItems -> {
+                                String title = "Exited " + region.getUniqueId();
+                                String message = null;
+                                for (ListItem listItem : listItems) {
+                                    message += listItem.getItem().getName() + "\n";
+                                }
+                                createAndShowDialog(title, message);
+                            });
                 }
 
                 @Override
@@ -125,12 +143,13 @@ public class MainActivity extends SupportSingleFragmentActivity {
             }
         }
     }
-    private void createAndShowDialog(String title) {
+
+    private void createAndShowDialog(String title, String message) {
         synchronized (dialogLock) {
             if (dialog!=null) dialog.dismiss();
             dialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle(title)
-                    .setMessage("You left the aisle without picking up some of your shopping items")
+                    .setMessage(message)
                     .setIcon(android.R.drawable.ic_dialog_alert).create();
             dialog.show();
         }

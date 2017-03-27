@@ -4,6 +4,7 @@ package com.abbytech.shoppingapp;
 import android.app.Application;
 import android.util.Log;
 
+import com.abbytech.shoppingapp.beacon.LocationAPI;
 import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.repo.ItemRepo;
@@ -33,6 +34,12 @@ public class ShoppingApp extends Application {
 
     private ShoppingListRepo shoppingListRepo;
 
+    private LocationAPI locationAPI;
+
+    public static ShoppingApp getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,6 +52,7 @@ public class ShoppingApp extends Application {
         shopRepo = new ShopRepo(retrofit.create(ShopAPI.class));
         shoppingListRepo = new ShoppingListRepo(new RemoteShoppingListRepo(retrofit.create(ShoppingListAPI.class)),
         new LocalShoppingListRepo(daoMaster));
+        locationAPI = retrofit.create(LocationAPI.class);
     }
 
     private Retrofit createRetrofit() {
@@ -73,9 +81,10 @@ public class ShoppingApp extends Application {
         return shoppingListRepo;
     }
 
-    public static ShoppingApp getInstance(){
-        return instance;
+    public LocationAPI getLocationAPI() {
+        return locationAPI;
     }
+
     public DaoSession getDao(){
         return daoMaster;
     }

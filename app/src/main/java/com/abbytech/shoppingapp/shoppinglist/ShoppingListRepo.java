@@ -52,6 +52,7 @@ public class ShoppingListRepo implements IShoppingListRepo {
     @Override
     public void saveShoppingItem(ListItem item) {
         localShoppingListRepo.saveShoppingItem(item);
+        remoteShoppingListRepo.saveShoppingItem(item);
     }
 
     @Override

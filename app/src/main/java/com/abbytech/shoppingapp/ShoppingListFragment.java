@@ -1,10 +1,10 @@
 package com.abbytech.shoppingapp;
 
 
-import android.support.v4.app.Fragment;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +13,8 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
+import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
@@ -23,9 +25,10 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment extends Fragment implements ItemActionEmitter<ListItem> {
     private ShoppingListAdapter adapter;
     private ShoppingList shoppingList;
+    private OnItemActionListener<ListItem> listener;
 
     @Nullable
     @Override
@@ -38,6 +41,7 @@ public class ShoppingListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list_recycler);
         adapter = new ShoppingListAdapter(null);
+        setAdapterListener();
         loadShoppingList(1);
         recyclerView.setAdapter(adapter);
     }
@@ -68,7 +72,19 @@ public class ShoppingListFragment extends Fragment {
         if (adapter != null) adapter.setItemList(this.shoppingList.getItems());
     }
 
-    class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItem> {
+    @Override
+    public void setOnItemActionListener(OnItemActionListener<ListItem> listener) {
+        this.listener = listener;
+        if (adapter != null) setAdapterListener();
+    }
+
+    private void setAdapterListener() {
+        adapter.setOnItemActionListener((item, action) -> listener.onItemAction(item, action));
+    }
+
+    class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItem> implements ItemActionEmitter<ListItem> {
+
+        private OnItemActionListener<ListItem> listener;
 
         public ShoppingListAdapter(List<ListItem> objects) {
             super(objects);
@@ -91,6 +107,7 @@ public class ShoppingListFragment extends Fragment {
                         item.setChecked(isChecked);
                         set(position, item);
                     }
+                    if (listener != null) listener.onItemAction(item, 0);
                 }
             });
         }
@@ -98,6 +115,11 @@ public class ShoppingListFragment extends Fragment {
         @Override
         protected int getDataBindingVariableId(int position) {
             return com.abbytech.shoppingapp.BR.item;
+        }
+
+        @Override
+        public void setOnItemActionListener(OnItemActionListener<ListItem> listener) {
+            this.listener = listener;
         }
     }
 }
