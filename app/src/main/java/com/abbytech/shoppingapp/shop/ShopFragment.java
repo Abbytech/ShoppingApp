@@ -24,10 +24,17 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class ShopFragment extends Fragment implements ItemActionEmitter<Item> {
+    public static final String EXTRA_AISLE = "BUNDLE EXTRA AISLE";
     private ShopItemAdapter adapter;
     private ItemRepo shopRepo;
     private OnItemActionListener<Item> listener;
+    private String aisle;
 
+    public static ShopFragment createInstance(Bundle extra) {
+        ShopFragment shopFragment = new ShopFragment();
+        shopFragment.setArguments(extra);
+        return shopFragment;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +45,7 @@ public class ShopFragment extends Fragment implements ItemActionEmitter<Item> {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopRepo = ShoppingApp.getInstance().getShopRepo();
+        aisle = getArguments().getString(EXTRA_AISLE);
     }
 
     public void setOnItemActionListener(OnItemActionListener<Item> listener) {
@@ -52,7 +60,7 @@ public class ShopFragment extends Fragment implements ItemActionEmitter<Item> {
         adapter = new ShopItemAdapter(null);
         adapter.setOnItemActionListener(listener);
         recyclerView.setAdapter(adapter);
-        Observable<List<Item>> listObservable = shopRepo.getAllItems().observeOn(AndroidSchedulers.mainThread());
+        Observable<List<Item>> listObservable = shopRepo.getAllItems(aisle).observeOn(AndroidSchedulers.mainThread());
         listObservable.subscribe(new Subscriber<List<Item>>() {
             @Override
             public void onCompleted() {
@@ -61,7 +69,7 @@ public class ShopFragment extends Fragment implements ItemActionEmitter<Item> {
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(getActivity(), "error in getting item list",
+                Toast.makeText(ShoppingApp.getInstance(), "error in getting item list",
                         Toast.LENGTH_SHORT).show();
             }
 
