@@ -69,11 +69,12 @@ public class LocalShoppingListRepo implements IShoppingListRepo {
         ShoppingListDao shoppingListDao = daoSession.getShoppingListDao();
         List<ListItem> listItems = list.getItems();
         if (listItems!=null&&!listItems.isEmpty()) {
-            daoSession.getListItemDao().insertOrReplaceInTx(listItems);
             List<Item> items = new ArrayList<>();
             for (ListItem item:listItems) {
+                item.setShoppingListId(list.getId());
                 items.add(item.getItem());
             }
+            daoSession.getListItemDao().insertOrReplaceInTx(listItems);
             daoSession.getItemDao().insertOrReplaceInTx(items);
         }
         shoppingListDao.insertOrReplace(list);
