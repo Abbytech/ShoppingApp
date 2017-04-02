@@ -57,7 +57,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(getActivity(), "Error while getting list", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ShoppingApp.getInstance(), "Error while getting list", Toast.LENGTH_SHORT).show();
             }
 
             @Override
