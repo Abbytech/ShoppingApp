@@ -6,70 +6,70 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.beacon.BeaconService;
-import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
-import com.abbytech.shoppingapp.framework.OnItemActionListener;
-import com.abbytech.shoppingapp.framework.ShoppingListController;
 import com.abbytech.shoppingapp.model.Beacon;
 import com.abbytech.shoppingapp.model.ListItem;
-import com.abbytech.shoppingapp.shop.aisles.AislesController;
-import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
 
-import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import java.util.List;
 
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends SupportSingleFragmentActivity {
     private static final String TAG = "test";
-    private static final Map<Class<? extends Fragment>, Class<? extends ActionController>>
-            fragmentActionListenerMap = new ArrayMap<>();
-
-    static {
-        fragmentActionListenerMap.put(AislesFragment.class, AislesController.class);
-        fragmentActionListenerMap.put(ShoppingListFragment.class, ShoppingListController.class);
-    }
-
     final Object dialogLock = new Object();
-    private BeaconManager beaconManager;
     private AlertDialog dialog;
     private final ServiceConnection beaconServiceConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            beaconManager = ((BeaconService.LocalBinder<BeaconService>) service)
-                    .getService().getBeaconManager();
+            BeaconService beaconManager = ((BeaconService.LocalBinder<BeaconService>) service)
+                    .getService();
+            beaconManager.getMonitorStream()
+                    .filter(regionStatus -> !regionStatus.isEntered())
+                    .flatMap(regionStatus -> ShoppingApp.getInstance()
+                            .getLocationAPI()
+                            .onExitLocation(new Beacon(regionStatus.getRegion().getId2().toHexString().substring(2))))
+                    .filter(listItems -> !listItems.isEmpty())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<ListItem>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<ListItem> listItems) {
+                            Log.d(TAG, "Received list of unchecked items; displaying dialog");
+                            /*String title = String.format("You missed some items in %1$s section", region.getUniqueId());*/
+                            String title = "You missed some items";
+                            String message = "";
+                            for (ListItem listItem : listItems) {
+                                message += listItem.getItem().getName() + "\n";
+                            }
+                            createAndShowDialog(title, message);
+                        }
+                    });
             beaconManager.addMonitorNotifier(new MonitorNotifier() {
                 @Override
                 public void didEnterRegion(Region region) {
                     Log.d(TAG, "didEnterRegion");
-                    runOnUiThread(MainActivity.this::dismissDialog);
                 }
 
                 @Override
                 public void didExitRegion(Region region) {
-                    Log.d(TAG, "didExitRegion");
-                    ShoppingApp.getInstance()
-                            .getLocationAPI()
-                            .onExitLocation(new Beacon(region.getId2().toHexString().substring(2)))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .filter(listItems -> !listItems.isEmpty())
-                            .subscribe(listItems -> {
-                                String title = "Exited " + region.getUniqueId();
-                                String message = null;
-                                for (ListItem listItem : listItems) {
-                                    message += listItem.getItem().getName() + "\n";
-                                }
-                                createAndShowDialog(title, message);
-                            });
+                    Log.d(TAG, "didExitRegion:" + region.toString());
                 }
 
                 @Override
@@ -81,7 +81,6 @@ public class MainActivity extends SupportSingleFragmentActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            beaconManager.removeAllMonitorNotifiers();
         }
     };
     private NavigationFragment navigationFragment;
@@ -101,21 +100,9 @@ public class MainActivity extends SupportSingleFragmentActivity {
     protected Fragment getFragment() {
         navigationFragment = new NavigationFragment();
         navigationFragment.setListener(fragment -> {
-            Class<? extends OnItemActionListener> itemActionListener = fragmentActionListenerMap.get(fragment.getClass());
-            try {
-                if (itemActionListener != null) {
-                    OnItemActionListener instance = itemActionListener.getConstructor(Fragment.class).newInstance(fragment);
-                    ((ItemActionEmitter) fragment).setOnItemActionListener(instance);
-                }
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            if (fragment instanceof ItemActionEmitter)
+                FragmentActionListenerMapper
+                        .bindEmitterToListener(fragment, (ItemActionEmitter) fragment);
         });
         return navigationFragment;
     }
@@ -132,16 +119,8 @@ public class MainActivity extends SupportSingleFragmentActivity {
     }
     @Override
     protected void onPause() {
-        super.onPause();
         unbindService(beaconServiceConn);
-    }
-
-    private void dismissDialog(){
-        if (dialog!=null) {
-            synchronized (dialogLock){
-                dialog.dismiss();
-            }
-        }
+        super.onPause();
     }
 
     private void createAndShowDialog(String title, String message) {
@@ -150,7 +129,8 @@ public class MainActivity extends SupportSingleFragmentActivity {
             dialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle(title)
                     .setMessage(message)
-                    .setIcon(android.R.drawable.ic_dialog_alert).create();
+                    .setNegativeButton("Mute reminder", null)
+                    .setIcon(android.R.drawable.ic_popup_reminder).create();
             dialog.show();
         }
     }

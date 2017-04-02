@@ -8,6 +8,6 @@
     <string-array name="name_aisle">
         <item>Furniture</item>
         <item>Dairy</item>
-        <item>Fresh produce</item>
+        <item>Produce</item>
     </string-array>
 </resources>

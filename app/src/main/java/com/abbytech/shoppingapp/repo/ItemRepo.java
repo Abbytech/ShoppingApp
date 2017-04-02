@@ -9,4 +9,6 @@ import rx.Observable;
 
 public interface ItemRepo {
     Observable<List<Item>> getAllItems();
+
+    Observable<List<Item>> getAllItems(String aisle);
 }

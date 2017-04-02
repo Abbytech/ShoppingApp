@@ -10,16 +10,20 @@ import android.util.Log;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.logging.LogManager;
 
 import java.io.IOException;
+
+import rx.Observable;
 
 public class BeaconService extends Service implements BeaconConsumer {
     private static final String TAG = "test";
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
     private Region[] regions;
+    private Observable<RegionStatus> monitorStream;
 
     public BeaconService() {
     }
@@ -30,8 +34,12 @@ public class BeaconService extends Service implements BeaconConsumer {
         beaconManager.getBeaconParsers().add(parser);
     }
 
-    public BeaconManager getBeaconManager() {
-        return beaconManager;
+    public Observable<RegionStatus> getMonitorStream() {
+        return monitorStream;
+    }
+
+    public void addMonitorNotifier(MonitorNotifier notifier) {
+        beaconManager.addMonitorNotifier(notifier);
     }
 
     @Override
@@ -39,6 +47,7 @@ public class BeaconService extends Service implements BeaconConsumer {
         beaconManager = BeaconManager.getInstanceForApplication(this);
         LogManager.setVerboseLoggingEnabled(true);
         beaconManager.bind(this);
+        setupMonitorObservable();
     }
 
     @Override
@@ -76,6 +85,26 @@ public class BeaconService extends Service implements BeaconConsumer {
         }
     }
 
+    private void setupMonitorObservable() {
+        monitorStream = Observable.create(subscriber -> {
+            beaconManager.addMonitorNotifier(new MonitorNotifier() {
+                @Override
+                public void didEnterRegion(Region region) {
+                    subscriber.onNext(new RegionStatus(region, true));
+                }
+
+                @Override
+                public void didExitRegion(Region region) {
+                    subscriber.onNext(new RegionStatus(region, false));
+                }
+
+                @Override
+                public void didDetermineStateForRegion(int i, Region region) {
+
+                }
+            });
+        });
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
