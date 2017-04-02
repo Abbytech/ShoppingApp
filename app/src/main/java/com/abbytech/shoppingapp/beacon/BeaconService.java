@@ -19,6 +19,7 @@ public class BeaconService extends Service implements BeaconConsumer {
     private static final String TAG = "test";
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
+    private Region[] regions;
 
     public BeaconService() {
     }
@@ -42,7 +43,22 @@ public class BeaconService extends Service implements BeaconConsumer {
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: " + BeaconService.class.getSimpleName());
+        if (regions != null) {
+            removeAllRegions();
+        }
+        beaconManager.removeAllMonitorNotifiers();
         beaconManager.unbind(this);
+    }
+
+    private void removeAllRegions() {
+        try {
+            for (Region region : regions) {
+                beaconManager.stopMonitoringBeaconsInRegion(region);
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "onDestroy: error in removing regions", e);
+        }
     }
 
     @Override
@@ -51,7 +67,7 @@ public class BeaconService extends Service implements BeaconConsumer {
         BeaconServiceOptions beaconServiceOptions = BeaconServiceOptions.fromResources(this);
         setupBeaconManager(beaconManager, beaconServiceOptions);
         try {
-            Region[] regions = RegionFactory.getRegionsFromResources(this);
+            regions = RegionFactory.getRegionsFromResources(this);
             for (Region region : regions) {
                 beaconManager.startMonitoringBeaconsInRegion(region);
             }
