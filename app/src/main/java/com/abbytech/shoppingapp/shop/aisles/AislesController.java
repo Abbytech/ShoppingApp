@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.abbytech.shoppingapp.FragmentActionListenerMapper;
 import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.shop.OnAisleActionListener;
 import com.abbytech.shoppingapp.shop.ShopFragment;
-import com.abbytech.shoppingapp.shoppinglist.ShopActionFragment;
 
 public class AislesController extends ActionController<Aisle> implements OnAisleActionListener {
     public AislesController(Fragment fragment) {
@@ -20,8 +20,8 @@ public class AislesController extends ActionController<Aisle> implements OnAisle
         int id = getFragment().getId();
         Bundle bundle = new Bundle();
         bundle.putString(ShopFragment.EXTRA_AISLE, item.name);
-        ShopActionFragment shopFragment = new ShopActionFragment();
-        shopFragment.setArguments(bundle);
+        ShopFragment shopFragment = ShopFragment.createInstance(bundle);
+        FragmentActionListenerMapper.bindEmitterToListener(shopFragment, shopFragment);
         getFragment()
                 .getFragmentManager()
                 .beginTransaction()
