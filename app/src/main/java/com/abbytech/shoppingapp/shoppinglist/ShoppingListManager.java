@@ -5,17 +5,15 @@ import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.shoppingapp.repo.IShoppingListRepo;
-import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.shop.OnShopItemActionListener;
 
 public class ShoppingListManager implements OnShopItemActionListener {
     private final CurrentShoppingListProvider currentShoppingListProvider;
     private IShoppingListRepo repo;
 
-    public ShoppingListManager(ItemActionEmitter itemActionEmitter, IShoppingListRepo repo,
+    public ShoppingListManager(IShoppingListRepo repo,
                                CurrentShoppingListProvider currentShoppingListProvider) {
         this.currentShoppingListProvider = currentShoppingListProvider;
-        itemActionEmitter.setOnItemActionListener(this);
         this.repo = repo;
     }
 
