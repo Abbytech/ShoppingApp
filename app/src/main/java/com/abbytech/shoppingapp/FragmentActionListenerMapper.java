@@ -8,7 +8,7 @@ import android.util.Log;
 import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
-import com.abbytech.shoppingapp.framework.ShoppingListController;
+import com.abbytech.shoppingapp.shoppinglist.ShoppingListController;
 import com.abbytech.shoppingapp.shop.ShopFragment;
 import com.abbytech.shoppingapp.shop.aisles.AislesController;
 import com.abbytech.shoppingapp.shop.aisles.AislesFragment;

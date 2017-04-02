@@ -1,11 +1,11 @@
-package com.abbytech.shoppingapp.framework;
+package com.abbytech.shoppingapp.shoppinglist;
 
 
 import android.support.v4.app.Fragment;
 
 import com.abbytech.shoppingapp.ShoppingApp;
+import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.model.ListItem;
-import com.abbytech.shoppingapp.shoppinglist.ShoppingListRepo;
 
 public class ShoppingListController extends ActionController<ListItem> {
     private final ShoppingListRepo shoppingListRepo;
