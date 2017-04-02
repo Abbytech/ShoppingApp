@@ -18,7 +18,7 @@ public class CreateShoppingListTest {
     private ShoppingList list;
     private LocalShoppingListRepo repo;
 
-    private int shoppingListId = 1;
+    private int shoppingListId = 100;
 
     {
         list = new ShoppingList((long) shoppingListId,"Stuff");
