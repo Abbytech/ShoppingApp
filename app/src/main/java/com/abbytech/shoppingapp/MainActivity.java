@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.beacon.BeaconService;
+import com.abbytech.shoppingapp.beacon.RegionNotification;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.model.Beacon;
 import com.abbytech.shoppingapp.model.ListItem;
@@ -16,8 +17,6 @@ import com.abbytech.util.ui.SupportSingleFragmentActivity;
 
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
-
-import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,10 +34,11 @@ public class MainActivity extends SupportSingleFragmentActivity {
                     .filter(regionStatus -> !regionStatus.isEntered())
                     .flatMap(regionStatus -> ShoppingApp.getInstance()
                             .getLocationAPI()
-                            .onExitLocation(new Beacon(regionStatus.getRegion().getId2().toHexString().substring(2))))
-                    .filter(listItems -> !listItems.isEmpty())
+                            .onExitLocation(new Beacon(regionStatus.getRegion().getId2().toHexString().substring(2)))
+                            .map(listItems -> new RegionNotification(regionStatus.getRegion(), listItems)))
+                    .filter(regionNotification -> !regionNotification.getItems().isEmpty())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<ListItem>>() {
+                    .subscribe(new Subscriber<RegionNotification>() {
                         @Override
                         public void onCompleted() {
 
@@ -50,12 +50,12 @@ public class MainActivity extends SupportSingleFragmentActivity {
                         }
 
                         @Override
-                        public void onNext(List<ListItem> listItems) {
+                        public void onNext(RegionNotification regionNotification) {
                             Log.d(TAG, "Received list of unchecked items; displaying dialog");
-                            /*String title = String.format("You missed some items in %1$s section", region.getUniqueId());*/
-                            String title = "You missed some items";
+                            String title = String.format("You missed some items in %1$s section",
+                                    regionNotification.getRegion().getUniqueId());
                             String message = "";
-                            for (ListItem listItem : listItems) {
+                            for (ListItem listItem : regionNotification.getItems()) {
                                 message += listItem.getItem().getName() + "\n";
                             }
                             createAndShowDialog(title, message);
@@ -89,11 +89,8 @@ public class MainActivity extends SupportSingleFragmentActivity {
     public void onBackPressed() {
         android.support.v4.app.FragmentManager fragmentManager =
                 navigationFragment.getChildFragmentManager();
-        if (fragmentManager.getBackStackEntryCount() == 0)
-            super.onBackPressed();
-        else {
-            fragmentManager.popBackStack();
-        }
+        if (fragmentManager.getBackStackEntryCount() == 0) super.onBackPressed();
+        else fragmentManager.popBackStack();
     }
 
     @Override
@@ -115,8 +112,9 @@ public class MainActivity extends SupportSingleFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bindService(new Intent(getApplicationContext(), BeaconService.class), beaconServiceConn,BIND_AUTO_CREATE);
+        bindService(new Intent(getApplicationContext(), BeaconService.class), beaconServiceConn, BIND_AUTO_CREATE);
     }
+
     @Override
     protected void onPause() {
         unbindService(beaconServiceConn);
@@ -125,7 +123,7 @@ public class MainActivity extends SupportSingleFragmentActivity {
 
     private void createAndShowDialog(String title, String message) {
         synchronized (dialogLock) {
-            if (dialog!=null) dialog.dismiss();
+            if (dialog != null) dialog.dismiss();
             dialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle(title)
                     .setMessage(message)

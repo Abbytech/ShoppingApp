@@ -7,12 +7,14 @@ import org.altbeacon.beacon.Region;
 
 import java.util.List;
 
-public class RegionEnterModel {
+public class RegionNotification {
     private final Region region;
+
     private List<ListItem> items;
 
-    public RegionEnterModel(Region region) {
+    public RegionNotification(Region region, List<ListItem> items) {
         this.region = region;
+        this.items = items;
     }
 
     public List<ListItem> getItems() {
