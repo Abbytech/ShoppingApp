@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="progress_dialog_login">Logging in..</string>
+    <string name="error_password">Password invalid</string>
+    <string name="error_username">Username invalid</string>
+    <string name="button_login">Login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="button_try_again">Try again</string>
+    <string name="successful_login">Logged in successfully</string>
+</resources>

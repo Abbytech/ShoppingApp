@@ -2,6 +2,7 @@ package com.abbytech.util.net;
 
 import com.abbytech.util.eventform.RequestAdapter;
 import com.abbytech.util.eventform.SimpleResponse;
+
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
 
@@ -10,14 +11,15 @@ public abstract class SimpleRequestAdapter<T>
 
     @Override
     public Observable<SimpleResponse> getRequestObservable(T request) {
-        Observable<Result<String>> responseCall = createResponseCall(request);
-        onResponse(responseCall);
-        return Util.mapToSimpleResponse(responseCall);
+        Observable<Result<Object>> responseCall = createResponseCall(request);
+        Observable<SimpleResponse> simpleResponseObservable = Util.mapToSimpleResponse(responseCall);
+        onResponse(simpleResponseObservable, request);
+        return simpleResponseObservable;
     }
 
-    protected void onResponse(Observable<Result<String>> observable) {
+    protected <S> void onResponse(Observable<SimpleResponse> observable, T request) {
 
     }
 
-    protected abstract Observable<Result<String>> createResponseCall(T request);
+    protected abstract Observable<Result<Object>> createResponseCall(T request);
 }

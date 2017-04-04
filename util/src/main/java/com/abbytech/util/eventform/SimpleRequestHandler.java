@@ -1,6 +1,5 @@
 package com.abbytech.util.eventform;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,11 +9,11 @@ import abbytech.util.R;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class SimpleRequestHandler extends SimpleObserver<SimpleResponse> {
-    Activity activity;
+    Context context;
     private AlertDialog progressDialog;
 
-    public SimpleRequestHandler(Activity activity) {
-        this.activity = activity;
+    public SimpleRequestHandler(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class SimpleRequestHandler extends SimpleObserver<SimpleResponse> {
     }
 
     public Context getContext() {
-        return activity;
+        return context;
     }
 
     protected AlertDialog createProgressDialog() {
@@ -52,7 +51,7 @@ public class SimpleRequestHandler extends SimpleObserver<SimpleResponse> {
     }
 
     protected String setProgressDialogMessage() {
-        return activity.getString(R.string.progress_dialog_message_generic);
+        return context.getString(R.string.progress_dialog_message_generic);
     }
 
     public void onSubmissionResponse(SimpleResponse response) {

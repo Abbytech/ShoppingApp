@@ -12,10 +12,12 @@ import rx.schedulers.Schedulers;
 
 public class RetrofitFactory {
 
-    public static Retrofit createRetrofit(Properties properties){
+    public static Retrofit createRetrofit(Properties properties, OkHttpClient.Builder clientBuilder) {
         String baseUrl = properties.getProperty("BASE_URL");
         String level = properties.getProperty("LOGGER_LEVEL");
-        OkHttpClient client = new OkHttpClient().newBuilder().addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.valueOf(level))).build();
+        OkHttpClient client = clientBuilder
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.valueOf(level)))
+                .build();
 
         return new Retrofit.Builder()
                 .client(client)

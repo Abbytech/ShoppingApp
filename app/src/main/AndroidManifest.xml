@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".ShoppingApp"
         android:allowBackup="true"
@@ -18,11 +19,6 @@
             android:configChanges="orientation|screenSize"
             android:label="ShoppingApp"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <service
@@ -30,6 +26,21 @@
             android:enabled="true"
             android:exported="false">
         </service>
+
+        <activity
+            android:name=".account.LoginActivity"
+            android:launchMode="singleInstance">
+        </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

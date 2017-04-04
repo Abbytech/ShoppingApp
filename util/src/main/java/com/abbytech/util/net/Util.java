@@ -13,10 +13,12 @@ public class Util {
             @Override
             public SimpleResponse call(Result<T> responseBodyResult) {
                 Throwable error = responseBodyResult.error();
-                String message = responseBodyResult.isError() ? error.getMessage() :
-                        responseBodyResult.response().body().toString();
+                String message = responseBodyResult.isError() ? error.getMessage() : responseBodyResult.response().message();
+
+                int httpCode = responseBodyResult.response().code();
+                boolean success = !responseBodyResult.isError() && httpCode >= 200 && httpCode < 300;
                 return new SimpleResponse
-                        (!responseBodyResult.isError(), message, error);
+                        (success, message, error);
             }
         });
     }
