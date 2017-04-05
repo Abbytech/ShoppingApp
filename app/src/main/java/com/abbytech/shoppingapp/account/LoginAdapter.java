@@ -65,7 +65,7 @@ public class LoginAdapter extends SimpleRequestAdapter<LoginRequest> implements 
     public void login(BasicLoginData account) {
         basicAuthenticator.accountManager.setAccount(account);
         proxy.setAuthenticator(basicAuthenticator);
-        getRequestObservable(new LoginRequest<>(null)).subscribe();
+        getRequestObservable(new LoginRequest<>(account)).subscribe();
     }
 
     @Override

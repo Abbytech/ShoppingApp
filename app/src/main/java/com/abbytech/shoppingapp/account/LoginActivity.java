@@ -34,6 +34,7 @@ public class LoginActivity extends SupportSingleFragmentActivity {
                 protected void onSuccessfulSubmission(String response) {
                     super.onSuccessfulSubmission(response);
                     startActivity(new Intent(getActivity(), MainActivity.class));
+                    getActivity().finish();
                 }
             };
         }
