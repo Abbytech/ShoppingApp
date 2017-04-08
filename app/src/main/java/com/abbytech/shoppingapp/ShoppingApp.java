@@ -11,7 +11,7 @@ import com.abbytech.login.data.BasicLoginData;
 import com.abbytech.login.persistence.LoginStateManager;
 import com.abbytech.shoppingapp.account.LoginActivity;
 import com.abbytech.shoppingapp.account.LoginAdapter;
-import com.abbytech.shoppingapp.beacon.LocationAPI;
+import com.abbytech.shoppingapp.notification.LocationAPI;
 import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.repo.ItemRepo;
