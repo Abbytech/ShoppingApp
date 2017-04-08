@@ -75,7 +75,7 @@ public class BeaconService extends Service implements BeaconConsumer {
         Log.d(TAG, "onBeaconServiceConnect: connected");
         BeaconServiceOptions beaconServiceOptions = BeaconServiceOptions.fromResources(this);
         setupBeaconManager(beaconManager, beaconServiceOptions);
-        try {
+        try {// TODO: 08/04/2017 load beacon information from server
             regions = RegionFactory.getRegionsFromResources(this);
             for (Region region : regions) {
                 beaconManager.startMonitoringBeaconsInRegion(region);
