@@ -25,6 +25,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionListener.ACTION_CHECK;
+
 public class ShoppingListFragment extends Fragment implements ItemActionEmitter<ListItem> {
     private ShoppingListAdapter adapter;
     private ShoppingList shoppingList;
@@ -79,7 +81,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
     }
 
     private void setAdapterListener() {
-        adapter.setOnItemActionListener((item, action) -> listener.onItemAction(item, action));
+        adapter.setOnItemActionListener(listener);
     }
 
     class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItem> implements ItemActionEmitter<ListItem> {
@@ -107,7 +109,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
                         item.setChecked(isChecked);
                         set(position, item);
                     }
-                    if (listener != null) listener.onItemAction(item, 0);
+                    if (listener != null) listener.onItemAction(item, ACTION_CHECK);
                 }
             });
         }
