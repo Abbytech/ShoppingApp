@@ -1,6 +1,9 @@
 package com.abbytech.shoppingapp.shoppinglist;
 
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ShoppingList;
@@ -15,6 +18,11 @@ public class ShoppingListManager implements OnShopItemActionListener {
                                CurrentShoppingListProvider currentShoppingListProvider) {
         this.currentShoppingListProvider = currentShoppingListProvider;
         this.repo = repo;
+    }
+
+    @Override
+    public void onItemAction(Item item, int action, @Nullable Bundle extras) {
+
     }
 
     @Override
