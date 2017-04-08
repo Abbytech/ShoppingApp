@@ -2,6 +2,7 @@ package com.abbytech.shoppingapp.shop.aisles;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
@@ -28,5 +29,10 @@ public class AislesController extends ActionController<Aisle> implements OnAisle
                 .addToBackStack("aisle")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(id, shopFragment).commit();
+    }
+
+    @Override
+    public void onItemAction(Aisle item, int action, @Nullable Bundle extra) {
+
     }
 }
