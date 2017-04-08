@@ -1,4 +1,4 @@
-package com.abbytech.shoppingapp.beacon;
+package com.abbytech.shoppingapp.notification;
 
 
 import com.abbytech.shoppingapp.model.ListItem;
