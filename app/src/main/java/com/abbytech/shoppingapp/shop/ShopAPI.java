@@ -1,6 +1,7 @@
 package com.abbytech.shoppingapp.shop;
 
 
+import com.abbytech.shoppingapp.model.Image;
 import com.abbytech.shoppingapp.model.Item;
 
 import java.util.List;
@@ -18,4 +19,12 @@ public interface ShopAPI {
     Observable<List<Item>> getItems(@Query("section") String section);
     @GET("Items/Get/{id}")
     Observable<Item> getItem(@Path("id") int id);
+
+    @GET("image/GetImagebyId/{id}")
+    Observable<Image> getImage(@Path("id") int id);
+
+    @GET("Items/Getrecordsearch/{id}")
+    Observable<Item> getItem(@Path("id") String id);
+
+
 }

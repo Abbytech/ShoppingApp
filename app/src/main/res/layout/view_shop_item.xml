@@ -1,19 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
+
         <variable
             name="shopItem"
-            type="com.abbytech.shoppingapp.model.Item"/>
+            type="com.abbytech.shoppingapp.model.Item" />
+
     </data>
-        <TextView
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:elevation="60dp"
+        android:focusable="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/cover"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/textView_item_name"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="11dp"
+                android:scaleType="fitXY"
+
+                />
+
+            <TextView
             android:id="@+id/textView_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/cover"
             android:ems="10"
-            android:text="@{shopItem.name}"
-            tools:text="Cheese"
-            android:layout_marginStart="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+                android:text='@{"Item:"+" "+shopItem.name}'
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/textView_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_item_name"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/cover"
+                android:ems="10"
+                android:text='@{"Price:"+" "+shopItem.price}'
+
+                android:textAppearance="?android:textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/textView_item_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_item_price"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/cover"
+                android:ems="10"
+                android:text='@{"Weight:"+" "+shopItem.weight}'
+
+                android:textAppearance="?android:textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/textView_item_origin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_item_weight"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/cover"
+                android:ems="10"
+                android:text='@{"Origin:"+" "+shopItem.origin}'
+
+                android:textAppearance="?android:textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/textView_item_expdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_item_origin"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/cover"
+                android:ems="10"
+                android:text='@{"Expire_Date:"+" "+shopItem.exp_date}'
+
+                android:textAppearance="?android:textAppearanceSmall" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </layout>
