@@ -1,6 +1,7 @@
 package com.abbytech.shoppingapp.shop;
 
 
+import com.abbytech.shoppingapp.model.Image;
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.repo.ItemRepo;
 
@@ -22,5 +23,13 @@ public class ShopRepo implements ItemRepo {
 
     public Observable<List<Item>> getAllItems(String section) {
         return api.getItems(section);
+    }
+
+    public Observable<Image> getImage(int id) {
+        return api.getImage(id);
+    }
+
+    public Observable<Item> getItem(String id) {
+        return api.getItem(id);
     }
 }
