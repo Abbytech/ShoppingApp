@@ -31,6 +31,7 @@ public final class FragmentActionListenerMapper {
         return fragmentActionListenerMap;
     }
 
+    @SuppressWarnings("unchecked")
     public static OnItemActionListener bindEmitterToListener(Fragment fragment, ItemActionEmitter emitter) {
         Class<? extends ActionController> itemActionListener = fragmentActionListenerMap.get(emitter.getClass());
         try {
