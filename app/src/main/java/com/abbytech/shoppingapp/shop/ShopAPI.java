@@ -23,8 +23,6 @@ public interface ShopAPI {
     @GET("image/GetImagebyId/{id}")
     Observable<Image> getImage(@Path("id") int id);
 
-    @GET("Items/Getrecordsearch/{id}")
-    Observable<Item> getItem(@Path("id") String id);
-
-
+    @GET("Items/Getrecordsearch/{search}")
+    Observable<List<Item>> getItemSearch(@Path("search") String search);
 }
