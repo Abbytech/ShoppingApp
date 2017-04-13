@@ -13,13 +13,19 @@ import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.logging.LogManager;
+import org.altbeacon.beacon.logging.Loggers;
 
 import java.io.IOException;
 
 import rx.Observable;
 
 public class BeaconService extends Service implements BeaconConsumer {
-    private static final String TAG = "test";
+    private static final String TAG = "BeaconService";
+
+    public BeaconManager getBeaconManager() {
+        return beaconManager;
+    }
+
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
     private Region[] regions;
@@ -32,6 +38,9 @@ public class BeaconService extends Service implements BeaconConsumer {
         BeaconManager.setRegionExitPeriod(options.getExitPeriod());
         BeaconParser parser = new BeaconParser().setBeaconLayout(options.getBeaconLayout());
         beaconManager.getBeaconParsers().add(parser);
+        beaconManager.setBackgroundMode(true);
+        beaconManager.setBackgroundBetweenScanPeriod(1000L);
+        beaconManager.setBackgroundScanPeriod(1000L);
     }
 
     public Observable<RegionStatus> getMonitorStream() {
@@ -45,7 +54,24 @@ public class BeaconService extends Service implements BeaconConsumer {
     @Override
     public void onCreate() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
+        LogManager.setLogger(Loggers.verboseLogger());
         LogManager.setVerboseLoggingEnabled(true);
+        beaconManager.addMonitorNotifier(new MonitorNotifier() {
+            @Override
+            public void didEnterRegion(Region region) {
+                Log.d(TAG, "didEnterRegion: ");
+            }
+
+            @Override
+            public void didExitRegion(Region region) {
+                Log.d(TAG, "didExitRegion: ");
+            }
+
+            @Override
+            public void didDetermineStateForRegion(int i, Region region) {
+
+            }
+        });
         beaconManager.bind(this);
         setupMonitorObservable();
     }

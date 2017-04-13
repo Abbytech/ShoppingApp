@@ -16,7 +16,7 @@ import com.abbytech.shoppingapp.notification.OfferRegionData;
 import com.abbytech.shoppingapp.notification.ZoneAlertService;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
 
-public class MainActivity extends SupportSingleFragmentActivity {
+public class MainActivity extends SupportSingleFragmentActivity{
     private static final String TAG = "test";
     final Object dialogLock = new Object();
     private AlertDialog dialog;
@@ -74,12 +74,14 @@ public class MainActivity extends SupportSingleFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bindService(new Intent(getApplicationContext(), ZoneAlertService.class), notificationServiceConnection, BIND_AUTO_CREATE);
+        Intent service = new Intent(getApplicationContext(), ZoneAlertService.class);
+        bindService(service,notificationServiceConnection,BIND_AUTO_CREATE);
+        getApplicationContext().startService(service);
     }
 
     @Override
     protected void onPause() {
-        zoneAlertService.getAnnouncer().removeListener(listener);
+        if (zoneAlertService!=null)zoneAlertService.getAnnouncer().removeListener(listener);
         unbindService(notificationServiceConnection);
         super.onPause();
     }

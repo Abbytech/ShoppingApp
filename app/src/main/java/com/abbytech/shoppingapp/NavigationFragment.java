@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.abbytech.shoppingapp.shop.SearchFragment;
 import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 
 import java.util.Map;
@@ -80,6 +82,30 @@ public class NavigationFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                FragmentManager fragmentManager = getChildFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentById(R.id.content);
+                if (!(fragment instanceof SearchFragment)) {
+                    fragment = new SearchFragment();
+                    fragmentManager
+                            .beginTransaction()
+                            .addToBackStack("search")
+                            .replace(R.id.content, fragment).commit();
+                }
+                SearchFragment searchFragment = (SearchFragment) fragment;
+                searchFragment.setQuery(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
 
     public interface OnFragmentNavigateListener {

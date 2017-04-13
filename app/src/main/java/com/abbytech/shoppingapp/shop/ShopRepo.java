@@ -29,7 +29,9 @@ public class ShopRepo implements ItemRepo {
         return api.getImage(id);
     }
 
-    public Observable<Item> getItem(String id) {
-        return api.getItem(id);
+    public Observable<List<Item>> getItemSearch(String search) {
+        return api.getItemSearch(search);
     }
+
+
 }

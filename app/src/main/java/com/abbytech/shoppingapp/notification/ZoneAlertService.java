@@ -27,24 +27,25 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     private BeaconService.LocalBinder<ZoneAlertService> binder =
             new BeaconService.LocalBinder<>(this);
     private Announcer<OnNotificationListener> announcer = Announcer.to(OnNotificationListener.class);
-    private Observable<MissedItemsRegionData> missedItemsRegionDataObservable;
-    private OnNotificationListener notificationListener = new OnNotificationListener() {
-        @Override
-        public void onNotifyMissingItems(MissedItemsRegionData missedItemsRegionData) {
-            missedItemsRegionDataObservable = Observable
-                    .create(subscriber -> subscriber.onNext(missedItemsRegionData));
-        }
+    private Observable<MissedItemsRegionData> missedItemsRegionDataObservable = Observable.create(subscriber -> {
+        announcer.addListener(new OnNotificationListener() {
+            @Override
+            public void onNotifyMissingItems(MissedItemsRegionData notification) {
+                subscriber.onNext(notification);
+            }
 
-        @Override
-        public void onNotifyOffer(OfferRegionData notification) {
+            @Override
+            public void onNotifyOffer(OfferRegionData notification) {
 
-        }
-    };
-
+            }
+        });
+    });
+    private boolean bound = false;
     @Override
     public void onCreate() {
-        bindService(new Intent(getApplicationContext(), BeaconService.class), this, BIND_AUTO_CREATE);
-        announcer.addListener(notificationListener);
+        Log.d(TAG, "onCreate: ");
+        startForeground(1,new Notification());
+        bindBeaconService();
         missedItemsRegionDataObservable
                 .map(NotificationFactory::createForMissedItems)
                 .subscribe(n -> {
@@ -60,8 +61,14 @@ public class ZoneAlertService extends Service implements ServiceConnection {
                 });
     }
 
+    private void bindBeaconService() {
+        Intent service = new Intent(getApplicationContext(), BeaconService.class);
+        bindService(service, this, BIND_AUTO_CREATE);
+    }
+
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
         unbindService(this);
     }
 
@@ -72,6 +79,13 @@ public class ZoneAlertService extends Service implements ServiceConnection {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        Log.d(TAG, "onServiceConnected: ");
+        //currently this is needed due to a bug in the AltBeacon library.
+        if (!bound) {
+            unbindService(this);
+            bindBeaconService();
+        }
+        bound = true;
         BeaconService beaconManager = ((BeaconService.LocalBinder<BeaconService>) service)
                 .getService();
         beaconManager.getMonitorStream()
@@ -118,11 +132,18 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     }
 
     private void notifyMissingItems(MissedItemsRegionData missedItemsRegionData) {
+        Log.d(TAG, "notifyMissingItems: ");
         announcer.announce().onNotifyMissingItems(missedItemsRegionData);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+        Log.d(TAG, "onServiceDisconnected: ");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     public Announcer<OnNotificationListener> getAnnouncer() {
