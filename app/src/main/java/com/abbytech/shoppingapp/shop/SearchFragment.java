@@ -14,7 +14,6 @@ import com.abbytech.shoppingapp.ShoppingApp;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.shoppingapp.model.Item;
-import com.abbytech.shoppingapp.repo.ItemRepo;
 
 import java.util.List;
 
@@ -27,16 +26,9 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 public class SearchFragment extends Fragment implements ItemActionEmitter<Item> {
-    public static final String EXTRA_AISLE = "BUNDLE EXTRA AISLE";
     private ShopItemAdapter adapter;
-    private ItemRepo shopRepo;
+    private ShopRepo shopRepo;
     private OnItemActionListener<Item> listener;
-
-    public static SearchFragment createInstance(Bundle extra) {
-        SearchFragment searchFragment = new SearchFragment();
-        searchFragment.setArguments(extra);
-        return searchFragment;
-    }
 
     public void setQuery(String query) {
         if (adapter != null) {

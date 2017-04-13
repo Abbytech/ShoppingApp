@@ -32,6 +32,4 @@ public class ShopRepo implements ItemRepo {
     public Observable<List<Item>> getItemSearch(String search) {
         return api.getItemSearch(search);
     }
-
-
 }
