@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.abbytech.shoppingapp.BR;
 import com.abbytech.shoppingapp.R;
@@ -42,7 +41,6 @@ class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> implements ItemAc
         return ViewShopItemAddableBinding.inflate(inflater,parent,false);
     }
 
-
     @Override
     public void onBindViewHolder(DataBindingViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -74,34 +72,6 @@ class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> implements ItemAc
                                 .load(imageUrl).into(imageView);
                     }
                 });
-
-
-        ListView listView = (ListView) holder.itemView.findViewById(R.id.search);
-        Item item2 = getItem(holder.getAdapterPosition());
-
-        ShoppingApp.getInstance()
-                .getShopRepo()
-                .getItem(item2.getName())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Item>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-
-                    }
-
-                    @Override
-                    public void onNext(Item item) {
-                        ShoppingApp context = ShoppingApp.getInstance();
-
-                    }
-                });
-
-
     }
 
     @Override
