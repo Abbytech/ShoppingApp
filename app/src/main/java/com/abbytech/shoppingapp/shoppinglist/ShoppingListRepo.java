@@ -59,4 +59,10 @@ public class ShoppingListRepo implements IShoppingListRepo {
     public Observable<List<ShoppingList>> getShoppingLists() {
         return null;
     }
+
+    @Override
+    public void deleteShoppingItem(ListItem item) {
+        localShoppingListRepo.deleteShoppingItem(item);
+        remoteShoppingListRepo.deleteShoppingItem(item);
+    }
 }
