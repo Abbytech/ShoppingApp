@@ -83,6 +83,7 @@ public class NavigationFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        //todo change OnQueryTextListener to Observable stream.
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -94,6 +95,7 @@ public class NavigationFragment extends Fragment {
                             .beginTransaction()
                             .addToBackStack("search")
                             .replace(R.id.content, fragment).commit();
+                    listener.onFragmentNavigated(fragment);
                 }
                 SearchFragment searchFragment = (SearchFragment) fragment;
                 searchFragment.setQuery(query);
@@ -105,7 +107,6 @@ public class NavigationFragment extends Fragment {
                 return false;
             }
         });
-
     }
 
     public interface OnFragmentNavigateListener {
