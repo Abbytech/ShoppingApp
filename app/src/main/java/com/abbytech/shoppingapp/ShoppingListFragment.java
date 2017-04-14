@@ -58,21 +58,9 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 Observable.from(new ArrayList<>(adapter.getItems()))
                         .filter(ListItemView::isSelected)
-                        .subscribe(new Subscriber<ListItemView>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(ListItemView listItemView) {
-                                adapter.remove(listItemView);
-                                listener.onItemAction(listItemView.getListItem(), ACTION_DELETE);
-                            }
+                        .subscribe(listItemView -> {
+                            adapter.remove(listItemView);
+                            listener.onItemAction(listItemView.getListItem(), ACTION_DELETE);
                         });
                 return true;
             }
@@ -93,21 +81,21 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
                 .getShoppingList(id);
         shoppingListObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ShoppingList>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(ShoppingApp.getInstance(), "Error while getting list", Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(ShoppingApp.getInstance(), "Error while getting list", Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onNext(ShoppingList shoppingList) {
-                setShoppingList(shoppingList);
-            }
-        });
+                    @Override
+                    public void onNext(ShoppingList shoppingList) {
+                        setShoppingList(shoppingList);
+                    }
+                });
     }
 
     public void setShoppingList(ShoppingList list) {
