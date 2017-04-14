@@ -12,6 +12,7 @@ import java.util.List;
 abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private final List<VH> viewHolders = new ArrayList<>();
     private List<T> objects;
+    // TODO: 14/04/2017 generalize listeners to more than just on click
     private OnItemClickListener<T> onItemClickListener;
 
     public RecyclerAdapter(List<T> objects) {
@@ -39,11 +40,15 @@ abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
     }
 
     public void setItemList(List<T> objects) {
+        if (this.objects != null) {
+            notifyItemRangeRemoved(0, this.objects.size());
+        }
         this.objects = objects;
         if (objects instanceof ObservableList)
             ((ObservableList<T>) objects)
                     .addOnListChangedCallback(new ObservableListCallback(this));
-        if (objects != null) notifyItemRangeInserted(0, objects.size());
+
+        if (objects != null) notifyItemRangeChanged(0, objects.size());
     }
 
     public void clear() {
@@ -56,14 +61,18 @@ abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     public void add(T item){
         objects.add(item);
+        notifyItemInserted(objects.size() - 1);
     }
 
     public void remove(T item){
-        objects.remove(item);
+        int i = objects.indexOf(item);
+        objects.remove(i);
+        notifyItemRangeRemoved(i, 1);
     }
 
     public void set(int index,T item){
         objects.set(index,item);
+        notifyItemChanged(index);
     }
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -83,6 +92,9 @@ abstract public class RecyclerAdapter<T, VH extends RecyclerView.ViewHolder> ext
         return objects.get(position);
     }
 
+    public List<T> getItems() {
+        return objects;
+    }
     @Override
     public int getItemCount() {
         return objects != null ? objects.size() : 0;
