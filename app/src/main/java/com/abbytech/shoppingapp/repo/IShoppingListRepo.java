@@ -12,4 +12,6 @@ public interface IShoppingListRepo {
     Observable<ShoppingList> getShoppingList(int id);
     void saveShoppingItem(ListItem item);
     Observable<List<ShoppingList>> getShoppingLists();
+
+    void deleteShoppingItem(ListItem item);
 }
