@@ -5,8 +5,11 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -16,9 +19,12 @@ import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
 import com.abbytech.shoppingapp.model.ListItem;
+import com.abbytech.shoppingapp.model.ListItemView;
 import com.abbytech.shoppingapp.model.ShoppingList;
+import com.abbytech.shoppingapp.util.ActionModeDelegate;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -26,11 +32,14 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionListener.ACTION_CHECK;
+import static com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionListener.ACTION_DELETE;
 
 public class ShoppingListFragment extends Fragment implements ItemActionEmitter<ListItem> {
     private ShoppingListAdapter adapter;
     private ShoppingList shoppingList;
     private OnItemActionListener<ListItem> listener;
+    private ActionModeDelegate<ListItemView> actionModeDelegate;
+    private int shoppingListId = 1;
 
     @Nullable
     @Override
@@ -43,8 +52,40 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list_recycler);
         adapter = new ShoppingListAdapter(null);
+        actionModeDelegate = new ActionModeDelegate<>((AppCompatActivity) getActivity(),
+                R.menu.menu_shopping_list_action_mode, new ActionModeDelegate.ActionModeListener() {
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                Observable.from(new ArrayList<>(adapter.getItems()))
+                        .filter(ListItemView::isSelected)
+                        .subscribe(new Subscriber<ListItemView>() {
+                            @Override
+                            public void onCompleted() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(ListItemView listItemView) {
+                                adapter.remove(listItemView);
+                                listener.onItemAction(listItemView.getListItem(), ACTION_DELETE);
+                            }
+                        });
+                return true;
+            }
+
+            @Override
+            public void onExitActionMode(ActionMode mode) {
+                for (ListItemView listItemView : adapter.getItems())
+                    listItemView.setSelected(false);
+            }
+        });
+        adapter.setOnItemClickListener(actionModeDelegate);
         setAdapterListener();
-        loadShoppingList(1);
+        loadShoppingList(shoppingListId);
         recyclerView.setAdapter(adapter);
     }
     public void loadShoppingList(int id) {
@@ -71,7 +112,12 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
 
     public void setShoppingList(ShoppingList list) {
         this.shoppingList = list;
-        if (adapter != null) adapter.setItemList(this.shoppingList.getItems());
+        List<ListItem> objects = list.getItems();
+        List<ListItemView> listItemViews = new ArrayList<>(objects.size());
+        for (ListItem object : objects) {
+            listItemViews.add(new ListItemView(object));
+        }
+        if (adapter != null) adapter.setItemList(listItemViews);
     }
 
     @Override
@@ -84,11 +130,11 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         adapter.setOnItemActionListener(listener);
     }
 
-    class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItem> implements ItemActionEmitter<ListItem> {
+    class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItemView> implements ItemActionEmitter<ListItem> {
 
         private OnItemActionListener<ListItem> listener;
 
-        public ShoppingListAdapter(List<ListItem> objects) {
+        public ShoppingListAdapter(List<ListItemView> objects) {
             super(objects);
         }
 
@@ -100,23 +146,30 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         @Override
         protected void onViewHolderCreated(DataBindingViewHolder holder) {
             super.onViewHolderCreated(holder);
-            CheckBox checkbox = (CheckBox) holder.itemView.findViewById(R.id.checkbox_item);
+            View itemView = holder.itemView;
+            CheckBox checkbox = (CheckBox) itemView.findViewById(R.id.checkbox_item);
             checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    ListItem item = getItem(position);
-                    if (item.isChecked() != isChecked) {
-                        item.setChecked(isChecked);
-                        set(position, item);
+                    ListItemView listItemView = getItem(position);
+                    ListItem listItemData = listItemView.getListItem();
+                    if (listItemData.isChecked() != isChecked) {
+                        listItemData.setChecked(isChecked);
+                        set(position, listItemView);
                     }
-                    if (listener != null) listener.onItemAction(item, ACTION_CHECK);
+                    if (listener != null) listener.onItemAction(listItemData, ACTION_CHECK);
                 }
+            });
+            itemView.setOnLongClickListener(v -> {
+                actionModeDelegate.onLongClick(v);
+                itemView.callOnClick();
+                return true;
             });
         }
 
         @Override
         protected int getDataBindingVariableId(int position) {
-            return com.abbytech.shoppingapp.BR.item;
+            return BR.listItemView;
         }
 
         @Override

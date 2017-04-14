@@ -19,7 +19,17 @@ public class ShoppingListController extends ActionController<ListItem> implement
 
     @Override
     public void onItemAction(ListItem item, @Action int action) {
-        shoppingListRepo.saveShoppingItem(item);
+        switch (action) {
+            case OnShoppingListItemActionListener.ACTION_CHECK:
+                shoppingListRepo.saveShoppingItem(item);
+                break;
+            case OnShoppingListItemActionListener.ACTION_DELETE:
+                shoppingListRepo.deleteShoppingItem(item);
+                break;
+            case OnShoppingListItemActionListener.ACTION_MODIFY:
+                break;
+        }
+
     }
 
     @Override
