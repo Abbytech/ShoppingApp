@@ -16,6 +16,9 @@ public class RegionStatus {
         return region;
     }
 
+    public String getRegionId() {
+        return region.getId2().toHexString().substring(2);
+    }
     public boolean isEntered() {
         return entered;
     }
