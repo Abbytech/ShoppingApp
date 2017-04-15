@@ -23,7 +23,7 @@ public class CreateShoppingListTest {
     {
         list = new ShoppingList((long) shoppingListId,"Stuff");
         List<ListItem> listItems = new ArrayList<>(1);
-        Item item = new Item(1L,"Broccoli","Produce");
+        Item item = new Item("Broccoli", "Produce");
         listItems.add(new ListItem(item,list));
         list.setItems(listItems);
     }

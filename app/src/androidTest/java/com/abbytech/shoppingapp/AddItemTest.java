@@ -27,7 +27,7 @@ public class AddItemTest {
     public void setUp() throws Exception {
         repo = new LocalShoppingListRepo(ShoppingApp.getInstance().getDao());
         list = getShoppingList();
-        manager = new ShoppingListManager(listener -> {}, repo,() -> list);
+        manager = new ShoppingListManager(repo, () -> list);
     }
 
     private ShoppingList getShoppingList() {
@@ -38,7 +38,7 @@ public class AddItemTest {
     public void itemGetsAdded() throws Exception {
         List<ListItem> items = list.getItems();
         int sizeBefore = items.size();
-        Item actual = new Item(1L, "shleem", "plumbus");
+        Item actual = new Item("shleem", "plumbus");
         manager.onItemAction(actual, OnShopItemActionListener.ACTION_ADD);
         List<ListItem> itemsAfter = list.getItems();
         Item expected = itemsAfter.get(itemsAfter.size() - 1).getItem();
