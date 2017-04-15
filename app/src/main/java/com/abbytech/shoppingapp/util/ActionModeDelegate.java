@@ -15,6 +15,7 @@ public class ActionModeDelegate<T extends ActionModeDelegate.Selectable> impleme
     private int menuRes;
     private ActionModeListener listener;
     private boolean isInActionMode = false;
+    private ActionMode mode;
 
     public ActionModeDelegate(AppCompatActivity activity, @MenuRes int menuRes, ActionModeListener listener) {
         this.activity = activity;
@@ -24,6 +25,7 @@ public class ActionModeDelegate<T extends ActionModeDelegate.Selectable> impleme
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        this.mode = mode;
         mode.getMenuInflater().inflate(menuRes, menu);
         return true;
     }
@@ -60,6 +62,9 @@ public class ActionModeDelegate<T extends ActionModeDelegate.Selectable> impleme
         return true;
     }
 
+    public void exitActionMode() {
+        if (mode != null) mode.finish();
+    }
     public interface Selectable {
         boolean isSelected();
 
