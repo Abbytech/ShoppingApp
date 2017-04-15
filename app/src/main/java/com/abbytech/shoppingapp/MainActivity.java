@@ -8,38 +8,50 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 
 import com.abbytech.shoppingapp.beacon.BeaconService;
-import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.notification.MissedItemsRegionData;
 import com.abbytech.shoppingapp.notification.NotificationData;
 import com.abbytech.shoppingapp.notification.NotificationFactory;
-import com.abbytech.shoppingapp.notification.OfferRegionData;
 import com.abbytech.shoppingapp.notification.ZoneAlertService;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class MainActivity extends SupportSingleFragmentActivity{
     private static final String TAG = "test";
     final Object dialogLock = new Object();
     private AlertDialog dialog;
-    private final ZoneAlertService.OnNotificationListener listener = new ZoneAlertService.OnNotificationListener() {
+    private final Subscriber<MissedItemsRegionData> missedItemsRegionDataSubscriber =
+            new Subscriber<MissedItemsRegionData>() {
         @Override
-        public void onNotifyMissingItems(MissedItemsRegionData missedItemsRegionData) {
+        public void onCompleted() {
+
+        }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(MissedItemsRegionData missedItemsRegionData) {
             NotificationData data = NotificationFactory.createForMissedItems(missedItemsRegionData);
             createAndShowDialog(data.getTitle(), data.getBody());
         }
-
-        @Override
-        public void onNotifyOffer(OfferRegionData notification) {
-
-        }
     };
-    private NavigationFragment navigationFragment;
+    private final ZoneAlertService.OnServiceReadyListener<ZoneAlertService> serviceReadyListener =
+            service -> service
+                    .getMissedItemsRegionDataObservable()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(missedItemsRegionDataSubscriber);
+    private OnBackPressedListener onBackPressedListener;
     private ZoneAlertService zoneAlertService;
     private final ServiceConnection notificationServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             zoneAlertService = ((BeaconService.LocalBinder<ZoneAlertService>) service)
                     .getService();
-            zoneAlertService.getAnnouncer().addListener(MainActivity.this.listener);
+            zoneAlertService.setOnServiceReadyListener(serviceReadyListener);
         }
 
         @Override
@@ -49,21 +61,16 @@ public class MainActivity extends SupportSingleFragmentActivity{
 
     @Override
     public void onBackPressed() {
-        android.support.v4.app.FragmentManager fragmentManager =
-                navigationFragment.getChildFragmentManager();
-        if (fragmentManager.getBackStackEntryCount() == 0) super.onBackPressed();
-        else fragmentManager.popBackStack();
+        if (!onBackPressedListener.onBackPressed()) {
+            super.onBackPressed();
+        }
     }
 
     @Override
     protected Fragment getFragment() {
-        navigationFragment = new NavigationFragment();
-        navigationFragment.setListener(fragment -> {
-            if (fragment instanceof ItemActionEmitter)
-                FragmentActionListenerMapper
-                        .bindEmitterToListener(fragment, (ItemActionEmitter) fragment);
-        });
-        return navigationFragment;
+        NavigationDrawerFragment navigationDrawerFragment = new NavigationDrawerFragment();
+        onBackPressedListener = navigationDrawerFragment;
+        return navigationDrawerFragment;
     }
 
     @Override
@@ -81,7 +88,8 @@ public class MainActivity extends SupportSingleFragmentActivity{
 
     @Override
     protected void onPause() {
-        if (zoneAlertService!=null)zoneAlertService.getAnnouncer().removeListener(listener);
+        missedItemsRegionDataSubscriber.unsubscribe();
+        if (zoneAlertService != null) zoneAlertService.setOnServiceReadyListener(null);
         unbindService(notificationServiceConnection);
         super.onPause();
     }
@@ -96,5 +104,12 @@ public class MainActivity extends SupportSingleFragmentActivity{
                     .setIcon(android.R.drawable.ic_popup_reminder).create();
             dialog.show();
         }
+    }
+
+    public interface OnBackPressedListener {
+        /**
+         * @return true if back press is 'consumed' i.e activity should NOT call super.onBackPressed
+         */
+        boolean onBackPressed();
     }
 }
