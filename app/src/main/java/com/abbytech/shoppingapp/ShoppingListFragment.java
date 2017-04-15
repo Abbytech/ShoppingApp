@@ -76,6 +76,13 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         loadShoppingList(shoppingListId);
         recyclerView.setAdapter(adapter);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        actionModeDelegate.exitActionMode();
+    }
+
     public void loadShoppingList(int id) {
         Observable<ShoppingList> shoppingListObservable = ShoppingApp.getInstance().getShoppingListRepo()
                 .getShoppingList(id);
@@ -118,6 +125,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         adapter.setOnItemActionListener(listener);
     }
 
+    // TODO: 15/04/2017 Display different items in different aisles/sections
     class ShoppingListAdapter extends DataBindingRecyclerAdapter<ListItemView> implements ItemActionEmitter<ListItem> {
 
         private OnItemActionListener<ListItem> listener;
