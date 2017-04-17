@@ -5,9 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.abbytech.shoppingapp.SplashActivity"
-
-    >
+    tools:context="com.abbytech.shoppingapp.SplashActivity">
 
     <ImageView
         android:id="@+id/splashImageView"
@@ -16,7 +14,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
-        android:src="@drawable/shop" />
-
-
+        android:src="@mipmap/ic_launcher"/>
 </RelativeLayout>

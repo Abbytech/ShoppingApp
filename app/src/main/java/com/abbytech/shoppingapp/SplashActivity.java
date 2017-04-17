@@ -16,8 +16,6 @@ import com.abbytech.shoppingapp.account.LoginActivity;
 import org.greenrobot.eventbus.Subscribe;
 
 public class SplashActivity extends AppCompatActivity {
-
-    // Variables declaration
     ImageView imageView;
     Animation animation;
     private LoginStateManager<BasicLoginData> loginStateManager;
@@ -29,29 +27,8 @@ public class SplashActivity extends AppCompatActivity {
         loginStateManager = ShoppingApp.getInstance().getLoginStateManager();
         loginStateManager.registerLoginEventSubscriber(this);
 
-        // Variables Initialization
         imageView = (ImageView) findViewById(R.id.splashImageView);
         animation  = AnimationUtils.loadAnimation(this, R.anim.rotate);
-
-        // Animation execution
-
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
-
-                finish();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
         imageView.setAnimation(animation);
     }
 
