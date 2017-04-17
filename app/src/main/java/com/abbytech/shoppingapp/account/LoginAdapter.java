@@ -7,7 +7,7 @@ import com.abbytech.login.auth.BasicAuthenticator;
 import com.abbytech.login.auth.BearerAuthenticator;
 import com.abbytech.login.data.BasicLoginData;
 import com.abbytech.login.event.LoginStateChangedEvent;
-import com.abbytech.login.retrofit.APIDelegate;
+import com.abbytech.util.net.APIDelegate;
 import com.abbytech.util.eventform.SimpleObserver;
 import com.abbytech.util.eventform.SimpleResponse;
 import com.abbytech.util.net.SimpleRequestAdapter;
@@ -71,7 +71,7 @@ public class LoginAdapter extends SimpleRequestAdapter<LoginRequest> implements 
     @Override
     protected Observable<Result<Object>> createResponseCall(LoginRequest request) {
         BasicLoginData account = (BasicLoginData) request.getExtra();
-        return api.login(account);
+        return api.perform(account);
     }
 
     @Override
