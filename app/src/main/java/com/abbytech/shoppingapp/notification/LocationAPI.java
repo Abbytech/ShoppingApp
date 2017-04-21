@@ -1,7 +1,8 @@
-package com.abbytech.shoppingapp.beacon;
+package com.abbytech.shoppingapp.notification;
 
 
 import com.abbytech.shoppingapp.model.Beacon;
+import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
 
 import java.util.List;
@@ -13,4 +14,7 @@ import rx.Observable;
 public interface LocationAPI {
     @POST("Beacon/GetuncheckedItem")
     Observable<List<ListItem>> onExitLocation(@Body Beacon beaconID);
+
+    @POST("Beacon/Getoffer")
+    Observable<List<Item>> onEnterlocation(@Body Beacon beaconID);
 }

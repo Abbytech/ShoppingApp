@@ -8,12 +8,14 @@ import com.abbytech.login.android.BasicAccountManager;
 import com.abbytech.login.auth.AuthenticatorProxy;
 import com.abbytech.login.auth.BasicAuthenticator;
 import com.abbytech.login.data.BasicLoginData;
+import com.abbytech.login.persistence.AccountPersister;
 import com.abbytech.login.persistence.LoginStateManager;
-import com.abbytech.shoppingapp.account.LoginActivity;
+import com.abbytech.shoppingapp.account.AccountAPI;
 import com.abbytech.shoppingapp.account.LoginAdapter;
-import com.abbytech.shoppingapp.beacon.LocationAPI;
+import com.abbytech.shoppingapp.account.RegisterAdapter;
 import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
+import com.abbytech.shoppingapp.notification.LocationAPI;
 import com.abbytech.shoppingapp.repo.ItemRepo;
 import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import com.abbytech.shoppingapp.shop.ShopAPI;
@@ -50,9 +52,20 @@ public class ShoppingApp extends Application {
     private LoginAdapter loginAdapter;
     private BasicAuthenticator basicAuthenticator;
     private AuthenticatorProxy authenticatorProxy;
+    private RegisterAdapter registerAdapter;
+    private AccountAPI accountAPI;
 
     public static ShoppingApp getInstance() {
         return instance;
+    }
+
+    public AccountPersister getAccountManager() {
+        return accountPersister;
+    }
+
+    public AccountAPI getAccountAPI() {
+        if (accountAPI == null) accountAPI = getRetrofit().create(AccountAPI.class);
+        return accountAPI;
     }
 
     public LoginStateManager<BasicLoginData> getLoginStateManager() {
@@ -84,7 +97,7 @@ public class ShoppingApp extends Application {
         shoppingListRepo = new ShoppingListRepo(new RemoteShoppingListRepo(retrofit.create(ShoppingListAPI.class)),
                 new LocalShoppingListRepo(daoMaster));
         locationAPI = retrofit.create(LocationAPI.class);
-        loginAdapter = createAdapter();
+        loginAdapter = createLoginAdapter();
         loginStateManager = new LoginStateManager<>(accountPersister, loginAdapter);
     }
 
@@ -98,15 +111,21 @@ public class ShoppingApp extends Application {
         return null;
     }
 
-    private LoginAdapter createAdapter() {
-        LoginActivity.LoginAPI loginAPI = ShoppingApp.getInstance().getRetrofit().create(LoginActivity.LoginAPI.class);
-        return new LoginAdapter(account -> loginAPI.login().map(responseBodyResult -> {
-            Result<Object> obs = Result.response((Response) responseBodyResult.response());
-            return obs;
-        }), getBasicAuthenticator(), null, getAuthenticatorProxy());
+    private LoginAdapter createLoginAdapter() {
+        return new LoginAdapter(account -> getAccountAPI().login().map(responseBodyResult ->
+                Result.response((Response) responseBodyResult.response())),
+                getBasicAuthenticator(), null, getAuthenticatorProxy());
 
     }
 
+    public RegisterAdapter getRegisterAdapter() {
+        if (registerAdapter == null) {
+            registerAdapter = new RegisterAdapter(param -> getAccountAPI()
+                    .register(param).map(responseBodyResult ->
+                            Result.response((Response) responseBodyResult.response())), getLoginAdapter());
+        }
+        return registerAdapter;
+    }
     private OkHttpClient.Builder createClientBuilder() {
         accountPersister = new BasicAccountManager(this);
         basicAuthenticator = new BasicAuthenticator(accountPersister);

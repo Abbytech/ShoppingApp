@@ -8,11 +8,12 @@ import android.util.Log;
 import com.abbytech.shoppingapp.framework.ActionController;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
-import com.abbytech.shoppingapp.shoppinglist.ShoppingListController;
+import com.abbytech.shoppingapp.shop.SearchFragment;
 import com.abbytech.shoppingapp.shop.ShopFragment;
 import com.abbytech.shoppingapp.shop.aisles.AislesController;
 import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 import com.abbytech.shoppingapp.shoppinglist.ShopController;
+import com.abbytech.shoppingapp.shoppinglist.ShoppingListController;
 
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public final class FragmentActionListenerMapper {
         fragmentActionListenerMap.put(AislesFragment.class, AislesController.class);
         fragmentActionListenerMap.put(ShoppingListFragment.class, ShoppingListController.class);
         fragmentActionListenerMap.put(ShopFragment.class, ShopController.class);
+        fragmentActionListenerMap.put(SearchFragment.class, ShopController.class);
     }
 
     public static Map<Class<? extends ItemActionEmitter>, Class<? extends ActionController>> getFragmentActionListenerMap() {

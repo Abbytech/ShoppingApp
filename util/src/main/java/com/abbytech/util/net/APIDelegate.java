@@ -1,9 +1,9 @@
-package com.abbytech.login.retrofit;
+package com.abbytech.util.net;
 
 
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
 
 public interface APIDelegate<T, R> {
-    Observable<Result<R>> login(T account);
+    Observable<Result<R>> perform(T param);
 }

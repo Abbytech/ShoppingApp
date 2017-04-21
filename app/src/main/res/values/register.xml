@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="button_register">Register</string>
+    <string name="progress_dialog_register">Hold on..</string>
+    <string name="message_registered_successfully">Registered successfully</string>
+    <string name="hint_email_address">Email address</string>
+    <string name="hint_confirm_password">Confirm password</string>
+</resources>

@@ -150,6 +150,11 @@ public class ListItem {
         myDao.update(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ListItem && this.getId().equals(((ListItem) obj).getId());
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1124631400)
     public void __setDaoSession(DaoSession daoSession) {

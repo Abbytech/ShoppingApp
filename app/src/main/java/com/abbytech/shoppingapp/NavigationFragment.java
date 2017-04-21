@@ -6,9 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +20,7 @@ import com.abbytech.shoppingapp.shop.aisles.AislesFragment;
 import java.util.Map;
 
 public class NavigationFragment extends Fragment {
+    static final String fragmentManagerTag = "NavigationFragment";
     private static Map<Integer,Class<? extends Fragment>> fragmentMap;
     static{
         fragmentMap = new android.support.v4.util.ArrayMap<>();
@@ -67,9 +66,6 @@ public class NavigationFragment extends Fragment {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         MenuItem item = navigation.getMenu().findItem(R.id.navigation_shopping_list);
         mOnNavigationItemSelectedListener.onNavigationItemSelected(item);
-        Toolbar appbar = (Toolbar) view.findViewById(R.id.appbar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(appbar);
     }
 
     @Override
@@ -83,6 +79,7 @@ public class NavigationFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        //todo change OnQueryTextListener to Observable stream.
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -94,6 +91,7 @@ public class NavigationFragment extends Fragment {
                             .beginTransaction()
                             .addToBackStack("search")
                             .replace(R.id.content, fragment).commit();
+                    listener.onFragmentNavigated(fragment);
                 }
                 SearchFragment searchFragment = (SearchFragment) fragment;
                 searchFragment.setQuery(query);
@@ -105,7 +103,6 @@ public class NavigationFragment extends Fragment {
                 return false;
             }
         });
-
     }
 
     public interface OnFragmentNavigateListener {

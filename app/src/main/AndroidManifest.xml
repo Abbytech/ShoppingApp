@@ -32,6 +32,9 @@
             android:launchMode="singleInstance">
         </activity>
         <activity
+            android:name=".account.RegisterActivity"
+            android:launchMode="singleTop"/>
+        <activity
             android:name=".SplashActivity"
             android:launchMode="singleInstance"
             android:theme="@style/SplashTheme">
@@ -41,6 +44,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".notification.ZoneAlertService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

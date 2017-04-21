@@ -3,7 +3,7 @@
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_shopping_list">Shopping list</string>
     <string name="title_shop">Shop</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_map">Store map</string>
     <string name="action_search">Search everything</string>
     <string name="base_url">http://shoppingapp20170328063139.azurewebsites.net/</string>
     <string name="cancel">cancel</string>
@@ -16,4 +16,6 @@
         <item>4 Pieces</item>
         <item>5 Pieces</item>
     </string-array>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

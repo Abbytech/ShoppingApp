@@ -41,7 +41,6 @@ class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> implements ItemAc
         return ViewShopItemAddableBinding.inflate(inflater,parent,false);
     }
 
-
     @Override
     public void onBindViewHolder(DataBindingViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -73,10 +72,6 @@ class ShopItemAdapter extends DataBindingRecyclerAdapter<Item> implements ItemAc
                                 .load(imageUrl).into(imageView);
                     }
                 });
-
-
-
-
     }
 
     @Override

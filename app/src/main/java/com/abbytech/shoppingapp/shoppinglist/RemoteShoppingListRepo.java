@@ -55,4 +55,24 @@ public class RemoteShoppingListRepo implements IShoppingListRepo {
     public Observable<List<ShoppingList>> getShoppingLists() {
         return api.getShoppingLists();
     }
+
+    @Override
+    public void deleteShoppingItem(ListItem item) {
+        api.deleteShoppingItem(item.getId()).subscribe(new Subscriber<Result<ResponseBody>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "onError: delete failed", e);
+            }
+
+            @Override
+            public void onNext(Result<ResponseBody> responseBodyResult) {
+                Log.d(TAG, "onNext: delete succeeded " + responseBodyResult.toString());
+            }
+        });
+    }
 }

@@ -7,6 +7,7 @@ import android.databinding.ObservableList;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
+import com.abbytech.shoppingapp.model.ListItemDao;
 import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.shoppingapp.model.ShoppingListDao;
 
@@ -63,7 +64,9 @@ public class LocalShoppingListRepo implements IShoppingListRepo {
     }
 
     private ShoppingList loadShoppingList(long id) {
-        return daoSession.getShoppingListDao().load(id);
+        ShoppingList shoppingList = daoSession.getShoppingListDao().load(id);
+        shoppingList.resetItems();
+        return shoppingList;
     }
     public void createShoppingList(ShoppingList list){
         ShoppingListDao shoppingListDao = daoSession.getShoppingListDao();
@@ -84,7 +87,13 @@ public class LocalShoppingListRepo implements IShoppingListRepo {
         return null;
     }
 
-    public boolean shoppingListWithIdExists(int id){
-        return (loadShoppingList(id)!=null);
+    @Override
+    public void deleteShoppingItem(ListItem item) {
+        ListItemDao listItemDao = daoSession.getListItemDao();
+        listItemDao.delete(item);
+    }
+
+    public boolean shoppingListWithIdExists(long id) {
+        return (daoSession.getShoppingListDao().load(id) != null);
     }
 }

@@ -2,16 +2,13 @@ package com.abbytech.shoppingapp.account;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.abbytech.shoppingapp.MainActivity;
+import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.ShoppingApp;
 import com.abbytech.util.eventform.SimpleRequestHandler;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
-
-import okhttp3.ResponseBody;
-import retrofit2.adapter.rxjava.Result;
-import retrofit2.http.GET;
-import rx.Observable;
 
 public class LoginActivity extends SupportSingleFragmentActivity {
     @Override
@@ -21,9 +18,13 @@ public class LoginActivity extends SupportSingleFragmentActivity {
         return loginFragment;
     }
 
-    public interface LoginAPI {
-        @GET("User/Login")
-        Observable<Result<ResponseBody>> login();
+    @Override
+    protected void setLayout() {
+        setContentView(R.layout.activity_login);
+    }
+
+    public void navigateToRegisterActivity(View view) {
+        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
     }
 
     public static class LoginFragment extends com.abbytech.login.ui.LoginFragment {
