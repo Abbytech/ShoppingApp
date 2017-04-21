@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:tools="http://schemas.android.com/tools">
+<layout>
     <data>
         <variable
             name="listItemView"
-            type="com.abbytech.shoppingapp.model.ListItemView"/>
+            type="com.abbytech.shoppingapp.model.ListItemView" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@{listItemView.selected?@android:color/holo_blue_light:@android:color/transparent}"
-              android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:background="@{listItemView.selected?@android:color/holo_blue_light:@android:color/transparent}"
+    android:orientation="horizontal">
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/checkbox_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="@{listItemView.listItem.checked}"/>
+        android:checked="@{listItemView.listItem.checked}" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@{listItemView.listItem.item.name}"
-        android:textColor="#504a4a"/>
+        android:textColor="#504a4a" />
 </LinearLayout>
 </layout>
