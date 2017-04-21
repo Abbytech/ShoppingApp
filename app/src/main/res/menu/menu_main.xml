@@ -7,14 +7,8 @@
         android:id="@+id/menu_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/action_search"
+
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always" />
-    <item
-
-        android:id="@+id/action_share"
-        android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-        android:title="share"
-
         app:showAsAction="always" />
 
 </menu>

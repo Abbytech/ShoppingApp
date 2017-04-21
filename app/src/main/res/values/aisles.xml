@@ -4,10 +4,14 @@
         <item>@drawable/ic_chocolate</item>
         <item>@drawable/ic_milk</item>
         <item>@drawable/ic_tomato</item>
+        <item>@drawable/bakeryy</item>
+
+
     </array>
     <string-array name="name_aisle">
         <item>Snacks</item>
         <item>Dairy</item>
-        <item>Produce</item>
+        <item>Fruits and Vegs</item>
+        <item>Bakery</item>
     </string-array>
 </resources>

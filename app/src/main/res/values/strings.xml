@@ -6,4 +6,14 @@
     <string name="title_notifications">Notifications</string>
     <string name="action_search">Search everything</string>
     <string name="base_url">http://shoppingapp20170328063139.azurewebsites.net/</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+
+    <string-array name="quantity">
+        <item>1 Piece</item>
+        <item>2 Pieces</item>
+        <item>3 Pieces</item>
+        <item>4 Pieces</item>
+        <item>5 Pieces</item>
+    </string-array>
 </resources>
