@@ -25,6 +25,7 @@ import com.abbytech.shoppingapp.shoppinglist.ShoppingListAPI;
 import com.abbytech.shoppingapp.shoppinglist.ShoppingListRepo;
 import com.abbytech.shoppingapp.util.PropertiesLoader;
 
+import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.database.Database;
 
 import java.io.IOException;
@@ -138,10 +139,6 @@ public class ShoppingApp extends Application {
         return retrofit;
     }
 
-    public ItemRepo getItemRepo() {
-        return itemRepo;
-    }
-
     public ShopRepo getShopRepo() {
         return shopRepo;
     }
@@ -156,5 +153,14 @@ public class ShoppingApp extends Application {
 
     public DaoSession getDao() {
         return daoMaster;
+    }
+
+    public void logout() {
+        getAccountManager().deleteAccount();
+        for (AbstractDao<?, ?> dao : getDao().getAllDaos()) dao.deleteAll();
+    }
+
+    public String getUsername() {
+        return accountPersister.getAccount().getUsername();
     }
 }
