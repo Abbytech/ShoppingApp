@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.abbytech.shoppingapp.R;
 
-public class BeaconServiceOptions {
+class BeaconServiceOptions {
     private long exitPeriod = 0;
 
     private String beaconLayout;
@@ -15,17 +15,17 @@ public class BeaconServiceOptions {
         this.beaconLayout = beaconLayout;
     }
 
-    public static BeaconServiceOptions fromResources(Context context) {
+    static BeaconServiceOptions fromResources(Context context) {
         String beaconLayout = context.getString(R.string.beacon_layout);
         long exitPeriod = context.getResources().getInteger(R.integer.exit_period);
         return new BeaconServiceOptions(exitPeriod, beaconLayout);
     }
 
-    public long getExitPeriod() {
+    long getExitPeriod() {
         return exitPeriod;
     }
 
-    public String getBeaconLayout() {
+    String getBeaconLayout() {
         return beaconLayout;
     }
 }
