@@ -1,18 +1,17 @@
 package com.abbytech.shoppingapp.notification;
 
 
+import com.abbytech.shoppingapp.beacon.RegionStatus;
 import com.abbytech.shoppingapp.model.ListItem;
-
-import org.altbeacon.beacon.Region;
 
 import java.util.List;
 
 public class MissedItemsRegionData {
-    private final Region region;
+    private final RegionStatus region;
 
     private List<ListItem> items;
 
-    public MissedItemsRegionData(Region region, List<ListItem> items) {
+    MissedItemsRegionData(RegionStatus region, List<ListItem> items) {
         this.region = region;
         this.items = items;
     }
@@ -21,7 +20,7 @@ public class MissedItemsRegionData {
         return items;
     }
 
-    public Region getRegion() {
+    public RegionStatus getRegionStatus() {
         return region;
     }
 }
