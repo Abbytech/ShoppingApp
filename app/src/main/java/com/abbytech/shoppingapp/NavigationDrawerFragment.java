@@ -15,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.abbytech.shoppingapp.account.LoginActivity;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener, MainActivity.OnBackPressedListener {
+
+    public static final String extraHeaderText = "EXTRA_HEADER_TEXT";
 
     @Nullable
     @Override
@@ -43,6 +46,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationView
         NavigationView navigationView = (NavigationView) view.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        TextView textViewHeader = (TextView) navigationView.getHeaderView(0).findViewById(R.id.textView_header);
+        String headerText = getArguments().getString(extraHeaderText);
+        textViewHeader.setText(headerText);
         NavigationFragment navigationFragment = new NavigationFragment();
         navigationFragment.setListener(fragment -> {
             if (fragment instanceof ItemActionEmitter)
@@ -59,12 +65,18 @@ public class NavigationDrawerFragment extends Fragment implements NavigationView
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.nav_logout:
-                ShoppingApp.getInstance().getAccountManager().deleteAccount();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
+                logout();
                 break;
         }
         return false;
+    }
+
+    private void logout() {
+        ShoppingApp app = ShoppingApp.getInstance();
+        app.logout();
+
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
     }
 
     @Override
