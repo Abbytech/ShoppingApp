@@ -50,6 +50,11 @@
             android:enabled="true"
             android:exported="false">
         </service>
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:configChanges="orientation|screenSize">
+        </activity>
     </application>
 
 </manifest>

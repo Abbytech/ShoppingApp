@@ -6,7 +6,9 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -35,7 +37,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
                 new NotificationCompat.Builder(ZoneAlertService.this.getApplicationContext());
         builder.setContentTitle(n.getTitle())
                 .setContentText(contentText)
-                .setVibrate(new long[]{1500, 500, 1500, 500})
+                .setVibrate(new long[]{0, 500, 250, 500})
                 .setSmallIcon(R.drawable.ic_list_black_24dp);
         NotificationCompat.InboxStyle inboxStyle =
                 new NotificationCompat.InboxStyle();
@@ -56,6 +58,8 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     private NotificationPolicy missedItemsPolicy;
     private NotificationPolicy offerPolicy;
     private NotificationScheduler notificationScheduler;
+    private boolean missedItemsEnabled = true;
+    private boolean offerEnabled = true;
 
     public boolean isReady() {
         return ready;
@@ -74,6 +78,13 @@ public class ZoneAlertService extends Service implements ServiceConnection {
         this.offerPolicy = offerPolicy;
     }
 
+    public void setOfferStreamEnabled(boolean enabled) {
+        offerEnabled = enabled;
+    }
+
+    public void setMissedItemsStreamEnabled(boolean enabled) {
+        missedItemsEnabled = enabled;
+    }
     public Observable<MissedItemsRegionData> getMissedItemsRegionDataObservable() {
         return missedItemsRegionDataObservable;
     }
@@ -89,6 +100,32 @@ public class ZoneAlertService extends Service implements ServiceConnection {
         notificationScheduler = new NotificationScheduler();
         setMissedItemsPolicy(notificationScheduler);
         setOfferPolicy(notificationScheduler);
+        setupSettings();
+    }
+
+    private void setupSettings() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean offerAlerts = prefs.getBoolean("OFFER_ALERTS", true);
+        boolean missedItemAlerts = prefs.getBoolean("MISSED_ITEM_ALERTS", true);
+        setOfferStreamEnabled(offerAlerts);
+        setMissedItemsStreamEnabled(missedItemAlerts);
+        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                switch (key) {
+                    case "OFFER_ALERTS":
+                        boolean offerAlerts = sharedPreferences
+                                .getBoolean("OFFER_ALERTS", true);
+                        setOfferStreamEnabled(offerAlerts);
+                        break;
+                    case "MISSED_ITEM_ALERTS":
+                        boolean missedItemAlerts = sharedPreferences
+                                .getBoolean("MISSED_ITEM_ALERTS", true);
+                        setMissedItemsStreamEnabled(missedItemAlerts);
+                        break;
+                }
+            }
+        });
     }
 
     private void bindBeaconService() {
@@ -158,6 +195,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     private void createStreams(Observable<RegionStatus> monitorStream) {
         LocationAPI locationAPI = ShoppingApp.getInstance().getLocationAPI();
         missedItemsRegionDataObservable = monitorStream
+                .filter(regionStatus -> missedItemsEnabled)
                 .mergeWith(notificationScheduler.getRegionStatusObservable())
                 .filter(regionStatus -> !regionStatus.isEntered())
                 .filter(regionStatus -> {
@@ -171,6 +209,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
                 .filter(missedItemsRegionData -> !missedItemsRegionData.getItems().isEmpty());
 
         offerRegionDataObservable = monitorStream
+                .filter(regionStatus -> offerEnabled)
                 .mergeWith(notificationScheduler.getRegionStatusObservable())
                 .filter(RegionStatus::isEntered)
                 .filter(regionStatus -> {

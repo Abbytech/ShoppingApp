@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.abbytech.shoppingapp.account.LoginActivity;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
+import com.abbytech.shoppingapp.settings.SettingsActivity;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener, MainActivity.OnBackPressedListener {
 
@@ -66,6 +67,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationView
         switch (itemId) {
             case R.id.nav_logout:
                 logout();
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
         }
         return false;
