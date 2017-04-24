@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0391e1"
     android:orientation="vertical">
 
     <include
@@ -13,12 +14,15 @@
 
     <TextView
         android:id="@+id/navigate_to_register_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="275dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:background="#ffffff"
         android:onClick="navigateToRegisterActivity"
         android:text="@string/no_account_yet_register"
-        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textAlignment="center"
+        android:textColor="#0391e1"
+        android:textSize="15dp"
         tools:text="@string/no_account_yet_register"/>
 </LinearLayout>

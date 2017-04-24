@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
 
         android:layout_height="190dp"
-        app:cardBackgroundColor="#f2f0f0"
+        app:cardBackgroundColor="#d1caca"
         app:cardCornerRadius="0dp"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="true"
@@ -47,10 +47,11 @@
 
             android:ems="10"
             android:gravity="bottom"
+            android:shadowColor="@color/colorPrimaryDark"
             android:text="@{aisle.name}"
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Holo.Small"
-            android:textColor="#262525"
+            android:textColor="#f2f2f2"
             tools:layout_alignParentStart="false"
             tools:text="Aisle name" />
 

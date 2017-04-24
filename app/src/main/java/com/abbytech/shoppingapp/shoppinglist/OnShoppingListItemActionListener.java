@@ -1,11 +1,11 @@
 package com.abbytech.shoppingapp.shoppinglist;
 
 
-import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
+import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
 
 public interface OnShoppingListItemActionListener extends OnItemActionListener<ListItem> {
@@ -16,8 +16,8 @@ public interface OnShoppingListItemActionListener extends OnItemActionListener<L
     @Override
     void onItemAction(ListItem item, @Action int action);
 
-    @Override
-    void onItemAction(ListItem item, @Action int action, @Nullable Bundle extra);
+
+    void onItemAction(Item item, @Action int action, @Nullable Long extras);
 
     @IntDef({ACTION_CHECK, ACTION_DELETE, ACTION_MODIFY})
     @interface Action {
