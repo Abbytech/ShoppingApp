@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -16,10 +15,9 @@ import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.ShoppingApp;
 import com.abbytech.shoppingapp.beacon.BeaconService;
 import com.abbytech.shoppingapp.beacon.RegionStatus;
-import com.abbytech.shoppingapp.model.Beacon;
+import com.abbytech.shoppingapp.model.Section;
 
 import org.altbeacon.beacon.MonitorNotifier;
-import org.altbeacon.beacon.Region;
 
 import rx.Observable;
 import rx.Observer;
@@ -117,9 +115,10 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     }
 
     private void setupSettings() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean offerAlerts = prefs.getBoolean("OFFER_ALERTS", true);
-        boolean missedItemAlerts = prefs.getBoolean("MISSED_ITEM_ALERTS", true);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.shared_prefs_settings), MODE_PRIVATE);
+        Log.d(TAG, "preferences name " + prefs.toString());
+        boolean offerAlerts = prefs.getBoolean("OFFER_ALERTS", false);
+        boolean missedItemAlerts = prefs.getBoolean("MISSED_ITEM_ALERTS", false);
         setOfferStreamEnabled(offerAlerts);
         setMissedItemsStreamEnabled(missedItemAlerts);
         prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -174,17 +173,17 @@ public class ZoneAlertService extends Service implements ServiceConnection {
         subscribeOfferNotification(offerRegionDataObservable);
         beaconManager.addMonitorNotifier(new MonitorNotifier() {
             @Override
-            public void didEnterRegion(Region region) {
+            public void didEnterRegion(org.altbeacon.beacon.Region region) {
                 Log.d(TAG, "didEnterRegion");
             }
 
             @Override
-            public void didExitRegion(Region region) {
+            public void didExitRegion(org.altbeacon.beacon.Region region) {
                 Log.d(TAG, "didExitRegion:" + region.toString());
             }
 
             @Override
-            public void didDetermineStateForRegion(int i, Region region) {
+            public void didDetermineStateForRegion(int i, org.altbeacon.beacon.Region region) {
 
             }
         });
@@ -217,7 +216,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
                     return b;
                 })
                 .flatMap(regionStatus -> locationAPI
-                        .onExitLocation(new Beacon(regionStatus.getRegionId()))
+                        .onExitLocation(new Section(regionStatus.getRegionId()))
                         .map(listItems -> new MissedItemsRegionData(regionStatus, listItems)))
                 .filter(missedItemsRegionData -> !missedItemsRegionData.getItems().isEmpty());
 
@@ -230,7 +229,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
                     b = offerPolicy == null || offerPolicy.shouldNotify(regionStatus);
                     return b;
                 })
-                .flatMap(regionStatus -> locationAPI.onEnterlocation(new Beacon(regionStatus.getRegionId()))
+                .flatMap(regionStatus -> locationAPI.onEnterlocation(new Section(regionStatus.getRegionId()))
                         .map(items -> new OfferRegionData(regionStatus, items)))
                 .filter(offerRegionData -> !offerRegionData.getOffers().isEmpty());
     }

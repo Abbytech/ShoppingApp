@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
@@ -104,7 +103,7 @@ public class MainActivity extends SupportSingleFragmentActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        boolean zoneAlerts = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean zoneAlerts = getSharedPreferences(getString(R.string.shared_prefs_settings), MODE_PRIVATE)
                 .getBoolean("ZONE_ALERTS", false);
         if (zoneAlerts) {
             Intent service = new Intent(getApplicationContext(), ZoneAlertService.class);

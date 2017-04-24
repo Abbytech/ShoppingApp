@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -19,10 +20,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences_settings);
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        String sharedPreferencesName = getPreferenceManager().getSharedPreferencesName();
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setSharedPreferencesName(getString(R.string.shared_prefs_settings));
+        preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        String sharedPreferencesName = preferenceManager.getSharedPreferencesName();
         Log.d(TAG, sharedPreferencesName);
+        addPreferencesFromResource(R.xml.preferences_settings);
     }
 
     @Override
