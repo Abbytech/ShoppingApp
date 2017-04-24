@@ -22,6 +22,7 @@ import com.abbytech.shoppingapp.model.ListItem;
 import com.abbytech.shoppingapp.model.ListItemView;
 import com.abbytech.shoppingapp.model.ShoppingList;
 import com.abbytech.shoppingapp.util.ActionModeDelegate;
+import com.abbytech.util.Announcer;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -37,7 +38,8 @@ import static com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionList
 public class ShoppingListFragment extends Fragment implements ItemActionEmitter<ListItem> {
     private ShoppingListAdapter adapter;
     private ShoppingList shoppingList;
-    private OnItemActionListener<ListItem> listener;
+    private Announcer<OnItemActionListener> listener =
+            new Announcer<>(OnItemActionListener.class);
     private ActionModeDelegate<ListItemView> actionModeDelegate;
     private int shoppingListId = 1;
 
@@ -60,7 +62,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
                         .filter(ListItemView::isSelected)
                         .subscribe(listItemView -> {
                             adapter.remove(listItemView);
-                            listener.onItemAction(listItemView.getListItem(), ACTION_DELETE);
+                            listener.announce().onItemAction(listItemView.getListItem(), ACTION_DELETE);
                         });
                 return true;
             }
@@ -117,12 +119,12 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
 
     @Override
     public void setOnItemActionListener(OnItemActionListener<ListItem> listener) {
-        this.listener = listener;
+        this.listener.addListener(listener);
         if (adapter != null) setAdapterListener();
     }
 
     private void setAdapterListener() {
-        adapter.setOnItemActionListener(listener);
+        adapter.setOnItemActionListener(listener.announce());
     }
 
     // TODO: 15/04/2017 Display different items in different aisles/sections
