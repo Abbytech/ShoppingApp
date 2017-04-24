@@ -22,31 +22,44 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
 import rx.Observable;
-import rx.functions.Action1;
+import rx.Observer;
 
 public class ZoneAlertService extends Service implements ServiceConnection {
     private static final String TAG = ZoneAlertService.class.getSimpleName();
-    private final Action1<NotificationData> notificationSubscriber = n -> {
-        NotificationManager notificationManager =
-                (NotificationManager) ZoneAlertService.this.getSystemService(NOTIFICATION_SERVICE);
+    private final Observer<NotificationData> notificationSubscriber = new Observer<NotificationData>() {
+        @Override
+        public void onCompleted() {
 
-        String[] items = n.getBody().split("\n");
-        String contentText = String.format("%1$d items", items.length);
+        }
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(ZoneAlertService.this.getApplicationContext());
-        builder.setContentTitle(n.getTitle())
-                .setContentText(contentText)
-                .setVibrate(new long[]{0, 500, 250, 500})
-                .setSmallIcon(R.drawable.ic_list_black_24dp);
-        NotificationCompat.InboxStyle inboxStyle =
-                new NotificationCompat.InboxStyle();
-        inboxStyle.setSummaryText(contentText);
-        for (String item : items) inboxStyle.addLine(item);
-        builder.setStyle(inboxStyle);
+        @Override
+        public void onError(Throwable e) {
 
-        Notification notification = builder.build();
-        notificationManager.notify(n.hashCode(), notification);
+        }
+
+        @Override
+        public void onNext(NotificationData n) {
+            NotificationManager notificationManager =
+                    (NotificationManager) ZoneAlertService.this.getSystemService(NOTIFICATION_SERVICE);
+
+            String[] items = n.getBody().split("\n");
+            String contentText = String.format("%1$d items", items.length);
+
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(ZoneAlertService.this.getApplicationContext());
+            builder.setContentTitle(n.getTitle())
+                    .setContentText(contentText)
+                    .setVibrate(new long[]{0, 500, 250, 500})
+                    .setSmallIcon(R.drawable.ic_list_black_24dp);
+            NotificationCompat.InboxStyle inboxStyle =
+                    new NotificationCompat.InboxStyle();
+            inboxStyle.setSummaryText(contentText);
+            for (String item : items) inboxStyle.addLine(item);
+            builder.setStyle(inboxStyle);
+
+            Notification notification = builder.build();
+            notificationManager.notify(n.hashCode(), notification);
+        }
     };
     private BeaconService.LocalBinder<ZoneAlertService> binder =
             new BeaconService.LocalBinder<>(this);
