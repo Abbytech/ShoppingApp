@@ -21,8 +21,19 @@ public class ShoppingListManager implements OnShopItemActionListener {
     }
 
     @Override
-    public void onItemAction(Item item, int action, @Nullable Bundle extras) {
+    public void onItemAction(Item item, int action, @Nullable Bundle extra) {
 
+    }
+
+    public void onItemAction(Item item, int action, @Nullable Long extras) {
+        ShoppingList shoppingList = currentShoppingListProvider.getCurrentShoppingList();
+        switch (action) {
+            case OnShopItemActionListener.ACTION_ADD:
+                ListItem listItem = new ListItem(item, extras, shoppingList);
+                repo.saveShoppingItem(listItem);
+                shoppingList.resetItems();
+                break;
+        }
     }
 
     @Override

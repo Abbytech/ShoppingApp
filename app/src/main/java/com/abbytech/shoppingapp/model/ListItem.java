@@ -2,15 +2,16 @@ package com.abbytech.shoppingapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity
 public class ListItem {
+    private Long quantity;
     @Id(autoincrement = true)
     private Long id;
     @SerializedName("item_ID")
@@ -33,17 +34,34 @@ public class ListItem {
         this.itemId = item.getId();
         this.shoppingListId = shoppingList.getId();
     }
-    
-    @Generated(hash = 122612842)
-    public ListItem(Long id, Long itemId, Long shoppingListId, boolean checked) {
+
+    @Generated(hash = 1919990123)
+    public ListItem() {
+    }
+
+    public ListItem(Item item, Long quantity, ShoppingList shoppingList) {
+        this.item = item;
+        this.itemId = item.getId();
+        this.shoppingListId = shoppingList.getId();
+        setQuantity(quantity);
+    }
+
+    @Generated(hash = 974873313)
+    public ListItem(Long quantity, Long id, Long itemId, Long shoppingListId,
+                    boolean checked) {
+        this.quantity = quantity;
         this.id = id;
         this.itemId = itemId;
         this.shoppingListId = shoppingListId;
         this.checked = checked;
     }
 
-    @Generated(hash = 1919990123)
-    public ListItem() {
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 
     public boolean isChecked() {

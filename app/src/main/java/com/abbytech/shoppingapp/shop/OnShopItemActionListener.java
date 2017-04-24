@@ -20,4 +20,5 @@ public interface OnShopItemActionListener extends OnItemActionListener<Item> {
     @IntDef({ACTION_ADD})
     @interface Action {
     }
+
 }

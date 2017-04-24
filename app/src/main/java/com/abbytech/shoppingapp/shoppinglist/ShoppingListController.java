@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.abbytech.shoppingapp.ShoppingApp;
 import com.abbytech.shoppingapp.framework.ActionController;
+import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
 
 public class ShoppingListController extends ActionController<ListItem> implements OnShoppingListItemActionListener {
@@ -29,6 +30,11 @@ public class ShoppingListController extends ActionController<ListItem> implement
             case OnShoppingListItemActionListener.ACTION_MODIFY:
                 break;
         }
+
+    }
+
+    @Override
+    public void onItemAction(Item item, int action, @Nullable Long extras) {
 
     }
 
