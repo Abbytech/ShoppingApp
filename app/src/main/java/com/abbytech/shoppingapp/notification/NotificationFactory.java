@@ -1,18 +1,29 @@
 package com.abbytech.shoppingapp.notification;
 
 
+import android.support.annotation.NonNull;
+
 import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
+
+import java.util.List;
 
 public class NotificationFactory {
     public static NotificationData createForMissedItems(MissedItemsRegionData data) {
         String title = String.format("You missed some items in %1$s section",
                 data.getRegionStatus().getRegion().getUniqueId());
+        List<ListItem> items = data.getItems();
+        StringBuilder message = createString(items);
+        return new NotificationData(title, message.toString(), data.getRegionStatus());
+    }
+
+    @NonNull
+    public static StringBuilder createString(List<ListItem> items) {
         StringBuilder message = new StringBuilder();
-        for (ListItem listItem : data.getItems()) {
+        for (ListItem listItem : items) {
             message.append(listItem.getItem().getName()).append("\n");
         }
-        return new NotificationData(title, message.toString(), data.getRegionStatus());
+        return message;
     }
 
     public static NotificationData createForOffer(OfferRegionData data) {
