@@ -2,30 +2,38 @@ package com.abbytech.shoppingapp.beacon;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.abbytech.shoppingapp.R;
 
-public class BeaconServiceOptions {
+class BeaconServiceOptions {
     private long exitPeriod = 0;
-
+    private long backgroundScanPeriod = 0;
     private String beaconLayout;
-
     private BeaconServiceOptions(long exitPeriod, String beaconLayout) {
         this.exitPeriod = exitPeriod;
         this.beaconLayout = beaconLayout;
     }
 
-    public static BeaconServiceOptions fromResources(Context context) {
+    static BeaconServiceOptions fromResources(Context context) {
         String beaconLayout = context.getString(R.string.beacon_layout);
-        long exitPeriod = context.getResources().getInteger(R.integer.exit_period);
-        return new BeaconServiceOptions(exitPeriod, beaconLayout);
+        Resources resources = context.getResources();
+        long exitPeriod = resources.getInteger(R.integer.exit_period);
+
+        BeaconServiceOptions beaconServiceOptions = new BeaconServiceOptions(exitPeriod, beaconLayout);
+        beaconServiceOptions.backgroundScanPeriod = resources.getInteger(R.integer.background_scan_period);
+        return beaconServiceOptions;
     }
 
-    public long getExitPeriod() {
+    public long getBackgroundScanPeriod() {
+        return backgroundScanPeriod;
+    }
+
+    long getExitPeriod() {
         return exitPeriod;
     }
 
-    public String getBeaconLayout() {
+    String getBeaconLayout() {
         return beaconLayout;
     }
 }

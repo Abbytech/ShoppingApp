@@ -7,15 +7,10 @@
     android:background="#0391e1"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/fragment_google_sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <include
         layout="@layout/activity_single_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/navigate_to_register_activity"

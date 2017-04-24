@@ -6,7 +6,10 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.R;
@@ -19,30 +22,82 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
 import rx.Observable;
-import rx.functions.Action1;
+import rx.Observer;
 
 public class ZoneAlertService extends Service implements ServiceConnection {
     private static final String TAG = ZoneAlertService.class.getSimpleName();
-    // TODO: 16/04/2017 Expandable notification/better display of item data
-    private final Action1<NotificationData> notificationSubscriber = n -> {
-        NotificationManager notificationManager =
-                (NotificationManager) ZoneAlertService.this.getSystemService(NOTIFICATION_SERVICE);
+    private final Observer<NotificationData> notificationSubscriber = new Observer<NotificationData>() {
+        @Override
+        public void onCompleted() {
 
-        Notification notification = new Notification.Builder(ZoneAlertService.this.getApplicationContext())
-                .setContentTitle(n.getTitle())
-                .setContentText(n.getBody())
-                .setVibrate(new long[]{1500, 500, 1500, 500})
-                .setSmallIcon(R.drawable.ic_list_black_24dp)
-                .build();
-        notificationManager.notify(0, notification);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(NotificationData n) {
+            NotificationManager notificationManager =
+                    (NotificationManager) ZoneAlertService.this.getSystemService(NOTIFICATION_SERVICE);
+
+            String[] items = n.getBody().split("\n");
+            String contentText = String.format("%1$d items", items.length);
+
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(ZoneAlertService.this.getApplicationContext());
+            builder.setContentTitle(n.getTitle())
+                    .setContentText(contentText)
+                    .setVibrate(new long[]{0, 500, 250, 500})
+                    .setSmallIcon(R.drawable.ic_list_black_24dp);
+            NotificationCompat.InboxStyle inboxStyle =
+                    new NotificationCompat.InboxStyle();
+            inboxStyle.setSummaryText(contentText);
+            for (String item : items) inboxStyle.addLine(item);
+            builder.setStyle(inboxStyle);
+
+            Notification notification = builder.build();
+            notificationManager.notify(n.hashCode(), notification);
+        }
     };
     private BeaconService.LocalBinder<ZoneAlertService> binder =
             new BeaconService.LocalBinder<>(this);
     private Observable<MissedItemsRegionData> missedItemsRegionDataObservable;
     private Observable<OfferRegionData> offerRegionDataObservable;
     private boolean bound = false;
+    private boolean ready = false;
     private OnServiceReadyListener<ZoneAlertService> serviceReadyListener;
+    private NotificationPolicy missedItemsPolicy;
+    private NotificationPolicy offerPolicy;
+    private NotificationScheduler notificationScheduler;
+    private boolean missedItemsEnabled = true;
+    private boolean offerEnabled = true;
 
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void muteRegion(RegionStatus status, long timeMillis) {
+        notificationScheduler.muteRegion(status, timeMillis);
+        notificationScheduler.setReminder(status, timeMillis);
+    }
+
+    private void setMissedItemsPolicy(NotificationPolicy missedItemsPolicy) {
+        this.missedItemsPolicy = missedItemsPolicy;
+    }
+
+    private void setOfferPolicy(NotificationPolicy offerPolicy) {
+        this.offerPolicy = offerPolicy;
+    }
+
+    public void setOfferStreamEnabled(boolean enabled) {
+        offerEnabled = enabled;
+    }
+
+    public void setMissedItemsStreamEnabled(boolean enabled) {
+        missedItemsEnabled = enabled;
+    }
     public Observable<MissedItemsRegionData> getMissedItemsRegionDataObservable() {
         return missedItemsRegionDataObservable;
     }
@@ -54,8 +109,36 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: ");
-        startForeground(1, new Notification());
         bindBeaconService();
+        notificationScheduler = new NotificationScheduler();
+        setMissedItemsPolicy(notificationScheduler);
+        setOfferPolicy(notificationScheduler);
+        setupSettings();
+    }
+
+    private void setupSettings() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean offerAlerts = prefs.getBoolean("OFFER_ALERTS", true);
+        boolean missedItemAlerts = prefs.getBoolean("MISSED_ITEM_ALERTS", true);
+        setOfferStreamEnabled(offerAlerts);
+        setMissedItemsStreamEnabled(missedItemAlerts);
+        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                switch (key) {
+                    case "OFFER_ALERTS":
+                        boolean offerAlerts = sharedPreferences
+                                .getBoolean("OFFER_ALERTS", true);
+                        setOfferStreamEnabled(offerAlerts);
+                        break;
+                    case "MISSED_ITEM_ALERTS":
+                        boolean missedItemAlerts = sharedPreferences
+                                .getBoolean("MISSED_ITEM_ALERTS", true);
+                        setMissedItemsStreamEnabled(missedItemAlerts);
+                        break;
+                }
+            }
+        });
     }
 
     private void bindBeaconService() {
@@ -81,8 +164,9 @@ public class ZoneAlertService extends Service implements ServiceConnection {
         if (!bound) {
             unbindService(this);
             bindBeaconService();
+            bound = true;
+            return;
         }
-        bound = true;
         BeaconService beaconManager = ((BeaconService.LocalBinder<BeaconService>) service)
                 .getService();
         createStreams(beaconManager.getMonitorStream());
@@ -105,6 +189,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
             }
         });
         if (serviceReadyListener != null) serviceReadyListener.onServiceReady(this);
+        ready = true;
     }
 
     private void subscribeOfferNotification(Observable<OfferRegionData> offerRegionDataObservable) {
@@ -123,16 +208,30 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     private void createStreams(Observable<RegionStatus> monitorStream) {
         LocationAPI locationAPI = ShoppingApp.getInstance().getLocationAPI();
         missedItemsRegionDataObservable = monitorStream
+                .filter(regionStatus -> missedItemsEnabled)
+                .mergeWith(notificationScheduler.getRegionStatusObservable())
                 .filter(regionStatus -> !regionStatus.isEntered())
+                .filter(regionStatus -> {
+                    boolean b;
+                    b = missedItemsPolicy == null || missedItemsPolicy.shouldNotify(regionStatus);
+                    return b;
+                })
                 .flatMap(regionStatus -> locationAPI
                         .onExitLocation(new Beacon(regionStatus.getRegionId()))
-                        .map(listItems -> new MissedItemsRegionData(regionStatus.getRegion(), listItems)))
+                        .map(listItems -> new MissedItemsRegionData(regionStatus, listItems)))
                 .filter(missedItemsRegionData -> !missedItemsRegionData.getItems().isEmpty());
 
         offerRegionDataObservable = monitorStream
+                .filter(regionStatus -> offerEnabled)
+                .mergeWith(notificationScheduler.getRegionStatusObservable())
                 .filter(RegionStatus::isEntered)
+                .filter(regionStatus -> {
+                    boolean b;
+                    b = offerPolicy == null || offerPolicy.shouldNotify(regionStatus);
+                    return b;
+                })
                 .flatMap(regionStatus -> locationAPI.onEnterlocation(new Beacon(regionStatus.getRegionId()))
-                        .map(items -> new OfferRegionData(regionStatus.getRegion(), items)))
+                        .map(items -> new OfferRegionData(regionStatus, items)))
                 .filter(offerRegionData -> !offerRegionData.getOffers().isEmpty());
     }
 
@@ -148,6 +247,10 @@ public class ZoneAlertService extends Service implements ServiceConnection {
 
     public void setOnServiceReadyListener(OnServiceReadyListener<ZoneAlertService> serviceReadyListener) {
         this.serviceReadyListener = serviceReadyListener;
+    }
+
+    public interface NotificationPolicy {
+        boolean shouldNotify(RegionStatus regionStatus);
     }
 
     public interface OnServiceReadyListener<T extends Service> {

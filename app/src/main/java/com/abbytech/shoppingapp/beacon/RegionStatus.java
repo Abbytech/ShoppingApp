@@ -7,7 +7,7 @@ public class RegionStatus {
     private final Region region;
     private final boolean entered;
 
-    public RegionStatus(Region region, boolean entered) {
+    RegionStatus(Region region, boolean entered) {
         this.region = region;
         this.entered = entered;
     }
@@ -23,4 +23,9 @@ public class RegionStatus {
         return entered;
     }
 
+    @Override
+    public int hashCode() {
+        byte enteredHash = (byte) (entered ? 1 : 2);
+        return getRegionId().hashCode() + enteredHash;
+    }
 }

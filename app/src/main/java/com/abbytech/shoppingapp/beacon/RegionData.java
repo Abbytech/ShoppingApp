@@ -1,7 +1,7 @@
 package com.abbytech.shoppingapp.beacon;
 
 
-public class RegionData {
+class RegionData {
     String name;
     String id;
 }

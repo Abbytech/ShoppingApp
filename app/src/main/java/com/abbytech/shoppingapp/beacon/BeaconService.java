@@ -21,16 +21,10 @@ import rx.Observable;
 
 public class BeaconService extends Service implements BeaconConsumer {
     private static final String TAG = "BeaconService";
-
-    public BeaconManager getBeaconManager() {
-        return beaconManager;
-    }
-
     private BeaconManager beaconManager;
     private LocalBinder<BeaconService> binder = new LocalBinder<>(this);
     private Region[] regions;
     private Observable<RegionStatus> monitorStream;
-
     public BeaconService() {
     }
 
@@ -40,7 +34,11 @@ public class BeaconService extends Service implements BeaconConsumer {
         beaconManager.getBeaconParsers().add(parser);
         beaconManager.setBackgroundMode(true);
         beaconManager.setBackgroundBetweenScanPeriod(1000L);
-        beaconManager.setBackgroundScanPeriod(1000L);
+        beaconManager.setBackgroundScanPeriod(options.getBackgroundScanPeriod());
+    }
+
+    public BeaconManager getBeaconManager() {
+        return beaconManager;
     }
 
     public Observable<RegionStatus> getMonitorStream() {
