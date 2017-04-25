@@ -32,7 +32,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "onError: ", e);
         }
 
         @Override
@@ -71,6 +71,24 @@ public class ZoneAlertService extends Service implements ServiceConnection {
     private NotificationScheduler notificationScheduler;
     private boolean missedItemsEnabled = true;
     private boolean offerEnabled = true;
+    private final SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    switch (key) {
+                        case "OFFER_ALERTS":
+                            boolean offerAlerts = sharedPreferences
+                                    .getBoolean("OFFER_ALERTS", true);
+                            setOfferStreamEnabled(offerAlerts);
+                            break;
+                        case "MISSED_ITEM_ALERTS":
+                            boolean missedItemAlerts = sharedPreferences
+                                    .getBoolean("MISSED_ITEM_ALERTS", true);
+                            setMissedItemsStreamEnabled(missedItemAlerts);
+                            break;
+                    }
+                }
+            };
 
     public boolean isReady() {
         return ready;
@@ -91,10 +109,12 @@ public class ZoneAlertService extends Service implements ServiceConnection {
 
     public void setOfferStreamEnabled(boolean enabled) {
         offerEnabled = enabled;
+        Log.d(TAG, "setOfferStreamEnabled: " + enabled);
     }
 
     public void setMissedItemsStreamEnabled(boolean enabled) {
         missedItemsEnabled = enabled;
+        Log.d(TAG, "setMissedItemsStreamEnabled: " + enabled);
     }
     public Observable<MissedItemsRegionData> getMissedItemsRegionDataObservable() {
         return missedItemsRegionDataObservable;
@@ -121,23 +141,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
         boolean missedItemAlerts = prefs.getBoolean("MISSED_ITEM_ALERTS", false);
         setOfferStreamEnabled(offerAlerts);
         setMissedItemsStreamEnabled(missedItemAlerts);
-        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                switch (key) {
-                    case "OFFER_ALERTS":
-                        boolean offerAlerts = sharedPreferences
-                                .getBoolean("OFFER_ALERTS", true);
-                        setOfferStreamEnabled(offerAlerts);
-                        break;
-                    case "MISSED_ITEM_ALERTS":
-                        boolean missedItemAlerts = sharedPreferences
-                                .getBoolean("MISSED_ITEM_ALERTS", true);
-                        setMissedItemsStreamEnabled(missedItemAlerts);
-                        break;
-                }
-            }
-        });
+        prefs.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
     private void bindBeaconService() {
