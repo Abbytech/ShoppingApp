@@ -6,24 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeBackground">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/background</item>
         <item name="windowActionModeOverlay">true</item>
-
-    </style>
-
-    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="MyTheme" parent="@android:style/Theme.Black">
-
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
@@ -32,18 +21,5 @@
         <item name="android:windowBackground">@android:drawable/progress_horizontal</item>
     </style>
 
-    <style name="theme1" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/primary_dark_material_light_1</item>
-    </style>
-
-    <style name="background" parent="Theme.Design">
-        <item name="colorPrimary">@color/background</item>
-    </style>
-
-    <style name="application" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorAccent">@color/background</item>
-        <item name="colorPrimary">@color/background</item>
-        <item name="android:windowBackground">?android:attr/textColorPrimary</item>
-    </style>
 
 </resources>
