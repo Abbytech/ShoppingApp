@@ -1,7 +1,6 @@
 package com.abbytech.shoppingapp;
 
 
-import android.app.LauncherActivity;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +20,9 @@ import android.widget.Toast;
 import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
-import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
-import com.abbytech.shoppingapp.model.ListItemDao;
 import com.abbytech.shoppingapp.model.ListItemView;
 import com.abbytech.shoppingapp.model.ShoppingList;
-import com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionListener;
 import com.abbytech.shoppingapp.util.ActionModeDelegate;
 import com.abbytech.util.Announcer;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
@@ -47,8 +44,8 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
     private Announcer<OnItemActionListener> listener = new Announcer<>(OnItemActionListener.class);
     private ActionModeDelegate<ListItemView> actionModeDelegate;
     private int shoppingListId = 1;
-    private double price =0;
-    private double totalprice=0;
+    private PriceCalculator priceCalculator;
+    private String TAG = ShoppingListFragment.class.getSimpleName();
 
     @Nullable
     @Override
@@ -80,39 +77,15 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
                     listItemView.setSelected(false);
             }
         });
+        TextView totalTextView = (TextView) view.findViewById(R.id.textView_total);
+        priceCalculator = new PriceCalculator(ShoppingApp.getInstance().getShoppingListRepo());
+        listener.addListener(priceCalculator);
+        priceCalculator.setListener(total -> totalTextView.setText(String.valueOf(total)));
+
         adapter.setOnItemClickListener(actionModeDelegate);
         setAdapterListener();
         loadShoppingList(shoppingListId);
         recyclerView.setAdapter(adapter);
-        //todo add a listener for the price calculator to 'listener'
-        listener.addListener(new OnItemActionListener() {
-            @Override
-            public void onItemAction(Object item,@OnShoppingListItemActionListener.Action int action) {
-                ListItem listItem = (ListItem) item;
-               /* for(Item i :listItem)
-                {
-                    TextView tv=(TextView)view.findViewById(R.id.textView3);
-                    String q=tv.toString();
-                    double quantity= Double.parseDouble(q);
-                    totalprice+=i.getPrice() * quantity;
-
-                }*/
-                //todo do something with the action
-                switch (action) {
-                    case OnShoppingListItemActionListener.ACTION_CHECK:
-                        break;
-                    case OnShoppingListItemActionListener.ACTION_DELETE:
-                        break;
-                    case OnShoppingListItemActionListener.ACTION_MODIFY:
-                        break;
-                }
-            }
-
-            @Override
-            public void onItemAction(Object item, int action, @Nullable Bundle extra) {
-
-            }
-        });
     }
 
     @Override
@@ -133,6 +106,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d(TAG, "onError: ", e);
                         Toast.makeText(ShoppingApp.getInstance(), "Error while getting list", Toast.LENGTH_SHORT).show();
                     }
 
@@ -191,8 +165,8 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
                     if (listItemData.isChecked() != isChecked) {
                         listItemData.setChecked(isChecked);
                         set(position, listItemView);
+                        if (listener != null) listener.onItemAction(listItemData, ACTION_CHECK);
                     }
-                    if (listener != null) listener.onItemAction(listItemData, ACTION_CHECK);
                 }
             });
             itemView.setOnLongClickListener(v -> {

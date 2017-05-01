@@ -18,20 +18,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
-        android:orientation="horizontal"
-        android:background="#ffffff">
+        android:background="#ffffff"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="115dp"
             android:layout_height="wrap_content"
-            android:text="Total Price : "
-            android:textSize="18dp"
-            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:text="Total Price: "
             android:textColor="#040F3E"
-            android:layout_marginLeft="10dp"/>
+            android:textSize="18dp"
+            android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/price_txt"
+            android:id="@+id/textView_total"
             android:layout_width="59dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
