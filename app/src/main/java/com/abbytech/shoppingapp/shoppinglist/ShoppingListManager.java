@@ -29,13 +29,22 @@ public class ShoppingListManager implements OnShopItemActionListener {
         ShoppingList shoppingList = currentShoppingListProvider.getCurrentShoppingList();
         switch (action) {
             case OnShopItemActionListener.ACTION_ADD:
-                ListItem listItem = new ListItem(item, extras, shoppingList);
+                ListItem existingListItem = findListItem(item.getId());
+                ListItem listItem = existingListItem != null ? existingListItem : new ListItem(item, extras, shoppingList);
+                if (existingListItem != null) existingListItem.addQuantity(extras);
                 repo.saveShoppingItem(listItem);
                 shoppingList.resetItems();
                 break;
         }
     }
 
+    private ListItem findListItem(long itemId) {
+        ShoppingList shoppingList = currentShoppingListProvider.getCurrentShoppingList();
+        for (ListItem listItem : shoppingList.getItems()) {
+            if (listItem.getItemId() == itemId) return listItem;
+        }
+        return null;
+    }
     @Override
     public void onItemAction(Item item, @Action int action) {
         ShoppingList shoppingList = currentShoppingListProvider.getCurrentShoppingList();
