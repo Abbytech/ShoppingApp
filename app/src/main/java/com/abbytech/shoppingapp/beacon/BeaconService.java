@@ -88,6 +88,7 @@ public class BeaconService extends Service implements BeaconConsumer {
         try {
             for (Region region : regions) {
                 beaconManager.stopMonitoringBeaconsInRegion(region);
+                beaconManager.stopRangingBeaconsInRegion(region);
             }
         } catch (RemoteException e) {
             Log.e(TAG, "onDestroy: error in removing regions", e);
@@ -103,6 +104,7 @@ public class BeaconService extends Service implements BeaconConsumer {
             regions = RegionFactory.getRegionsFromResources(this);
             for (Region region : regions) {
                 beaconManager.startMonitoringBeaconsInRegion(region);
+                beaconManager.startRangingBeaconsInRegion(region);
             }
         } catch (RemoteException | IOException e) {
             Log.e(TAG, "onBeaconServiceConnect: ", e);
