@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="drawable_aisle">
-        <item>@drawable/ic_chocolate</item>
-        <item>@drawable/ic_milk</item>
-        <item>@drawable/ic_tomato</item>
-        <item>@drawable/bakeryy</item>
+        <item>@drawable/chips</item>
+        <item>@drawable/eggs</item>
+        <item>@drawable/fruits3</item>
+        <item>@drawable/bread</item>
 
 
     </array>

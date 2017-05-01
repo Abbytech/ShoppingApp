@@ -18,6 +18,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="What would you like to buy ?"
+
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
@@ -53,8 +54,7 @@
 
         <activity
             android:name=".settings.SettingsActivity"
-            android:configChanges="orientation|screenSize">
-        </activity>
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

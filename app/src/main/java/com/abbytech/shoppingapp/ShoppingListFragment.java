@@ -1,6 +1,7 @@
 package com.abbytech.shoppingapp;
 
 
+import android.app.LauncherActivity;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,14 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abbytech.shoppingapp.databinding.ViewListItemBinding;
 import com.abbytech.shoppingapp.framework.ItemActionEmitter;
 import com.abbytech.shoppingapp.framework.OnItemActionListener;
+import com.abbytech.shoppingapp.model.Item;
 import com.abbytech.shoppingapp.model.ListItem;
+import com.abbytech.shoppingapp.model.ListItemDao;
 import com.abbytech.shoppingapp.model.ListItemView;
 import com.abbytech.shoppingapp.model.ShoppingList;
+import com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionListener;
 import com.abbytech.shoppingapp.util.ActionModeDelegate;
 import com.abbytech.util.Announcer;
 import com.abbytech.util.adapter.DataBindingRecyclerAdapter;
@@ -38,10 +43,12 @@ import static com.abbytech.shoppingapp.shoppinglist.OnShoppingListItemActionList
 public class ShoppingListFragment extends Fragment implements ItemActionEmitter<ListItem> {
     private ShoppingListAdapter adapter;
     private ShoppingList shoppingList;
-    private Announcer<OnItemActionListener> listener =
-            new Announcer<>(OnItemActionListener.class);
+
+    private Announcer<OnItemActionListener> listener = new Announcer<>(OnItemActionListener.class);
     private ActionModeDelegate<ListItemView> actionModeDelegate;
     private int shoppingListId = 1;
+    private double price =0;
+    private double totalprice=0;
 
     @Nullable
     @Override
@@ -77,6 +84,35 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
         setAdapterListener();
         loadShoppingList(shoppingListId);
         recyclerView.setAdapter(adapter);
+        //todo add a listener for the price calculator to 'listener'
+        listener.addListener(new OnItemActionListener() {
+            @Override
+            public void onItemAction(Object item,@OnShoppingListItemActionListener.Action int action) {
+                ListItem listItem = (ListItem) item;
+               /* for(Item i :listItem)
+                {
+                    TextView tv=(TextView)view.findViewById(R.id.textView3);
+                    String q=tv.toString();
+                    double quantity= Double.parseDouble(q);
+                    totalprice+=i.getPrice() * quantity;
+
+                }*/
+                //todo do something with the action
+                switch (action) {
+                    case OnShoppingListItemActionListener.ACTION_CHECK:
+                        break;
+                    case OnShoppingListItemActionListener.ACTION_DELETE:
+                        break;
+                    case OnShoppingListItemActionListener.ACTION_MODIFY:
+                        break;
+                }
+            }
+
+            @Override
+            public void onItemAction(Object item, int action, @Nullable Bundle extra) {
+
+            }
+        });
     }
 
     @Override
@@ -115,6 +151,7 @@ public class ShoppingListFragment extends Fragment implements ItemActionEmitter<
             listItemViews.add(new ListItemView(object));
         }
         if (adapter != null) adapter.setItemList(listItemViews);
+        //todo tell the price thing that a new list is set
     }
 
     @Override

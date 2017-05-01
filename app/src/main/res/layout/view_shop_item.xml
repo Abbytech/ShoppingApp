@@ -8,9 +8,10 @@
             type="com.abbytech.shoppingapp.model.Item" />
 
     </data>
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="250dp">
 
             <ImageView
                 android:id="@+id/cover"
@@ -32,8 +33,10 @@
                 android:layout_toRightOf="@+id/cover"
                 android:ems="10"
                 android:text='@{"Item:"+" "+shopItem.name}'
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textStyle="bold" />
+
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:textColor="#040F3E"/>
 
 
             <TextView
@@ -46,8 +49,10 @@
                 android:layout_toRightOf="@+id/cover"
                 android:ems="10"
                 android:text='@{"Price:"+" "+shopItem.price}'
-
-                android:textAppearance="?android:textAppearanceSmall" />
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="#040F3E"
+                />
 
             <TextView
                 android:id="@+id/textView_item_weight"
@@ -59,8 +64,10 @@
                 android:layout_toRightOf="@+id/cover"
                 android:ems="10"
                 android:text='@{"Weight:"+" "+shopItem.weight}'
-
-                android:textAppearance="?android:textAppearanceSmall" />
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="#040F3E"
+              />
 
             <TextView
                 android:id="@+id/textView_item_origin"
@@ -71,9 +78,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_toRightOf="@+id/cover"
                 android:ems="10"
+                android:textStyle="bold"
                 android:text='@{"Origin:"+" "+shopItem.origin}'
-
-                android:textAppearance="?android:textAppearanceSmall" />
+                android:textSize="15dp"
+                android:textColor="#040F3E"
+                />
 
             <TextView
                 android:id="@+id/textView_item_expdate"
@@ -85,8 +94,11 @@
                 android:layout_toRightOf="@+id/cover"
                 android:ems="10"
                 android:text='@{"Expire_Date:"+" "+shopItem.exp_date}'
-
-                android:textAppearance="?android:textAppearanceSmall" />
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="#040F3E"
+                 />
 
         </RelativeLayout>
+
 </layout>

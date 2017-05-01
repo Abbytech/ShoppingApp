@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShoppingApp</string>
+    <string name="app_name">SmartCart</string>
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_shopping_list">Shopping list</string>
     <string name="title_shop">Shop</string>
