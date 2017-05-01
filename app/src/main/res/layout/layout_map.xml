@@ -1,30 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/button_dairy"
-        android:layout_width="162dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="49dp"
-        android:text="Dairy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/colorPrimary"
-        tools:text="Dairy"/>
+    <data>
 
-    <Button
-        android:id="@+id/button_snacks"
-        android:layout_width="162dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="60dp"
-        android:text="Snacks"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_dairy"/>
-</android.support.constraint.ConstraintLayout>
+        <import type="com.abbytech.shoppingapp.map.MapFragment.Arguments"/>
+
+        <import type="java.util.List"/>
+
+        <variable
+            name="sections"
+            type="List&lt;Arguments&gt;"/>
+    </data>
+
+    <AbsoluteLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/photoview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:background="@drawable/floorplan"/>
+
+        <include
+            android:id="@+id/button_dairy"
+            layout="@layout/layout_map_section"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            bind:section="@{sections[0]}"
+            tools:layout_x="10dp"
+            tools:layout_y="90dp"/>
+
+        <include
+            android:id="@+id/button_snacks"
+            layout="@layout/layout_map_section"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            bind:section="@{sections[1]}"
+            tools:layout_x="0dp"
+            tools:layout_y="248dp"/>
+
+        <include
+            android:id="@+id/button_produce"
+            layout="@layout/layout_map_section"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            bind:section="@{sections[2]}"
+            tools:layout_x="0dp"
+            tools:layout_y="162dp"/>
+
+        <include
+            android:id="@+id/button_bakery"
+            layout="@layout/layout_map_section"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            bind:section="@{sections[3]}"/>
+    </AbsoluteLayout>
+</layout>

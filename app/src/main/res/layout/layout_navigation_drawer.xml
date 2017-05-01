@@ -17,10 +17,8 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#e2e2e2"
             android:theme="@style/AppTheme.AppBarOverlay"
-            app:elevation="8dp"
-            app:titleTextAppearance="@style/Toolbar.TitleText">
+            app:elevation="8dp">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/appbar"

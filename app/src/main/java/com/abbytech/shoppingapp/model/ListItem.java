@@ -64,6 +64,9 @@ public class ListItem {
         this.quantity = quantity;
     }
 
+    public void addQuantity(Long quantity) {
+        this.quantity += quantity;
+    }
     public boolean isChecked() {
         return checked;
     }

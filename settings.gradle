@@ -1,1 +1,1 @@
-include ':app', ':util', ':login'
+include ':app', ':util', ':login', ':photoview'

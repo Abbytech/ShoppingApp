@@ -4,14 +4,14 @@
     <SwitchPreference
         android:id="@+id/switch_zone_alerts"
         android:defaultValue="true"
-        android:key="ZONE_ALERTS"
+        android:key="@string/PREFS_KEY_ZONE_ALERTS"
         android:title="In-store zone alerts"/>
     <SwitchPreference
         android:defaultValue="true"
-        android:key="OFFER_ALERTS"
+        android:key="@string/PREFS_KEY_OFFER_ALERTS"
         android:title="Offer alerts"/>
     <SwitchPreference
         android:defaultValue="true"
-        android:key="MISSED_ITEM_ALERTS"
+        android:key="@string/PREFS_KEY_MISSED_ITEM_ALERTS"
         android:title="Missed item alerts"/>
 </PreferenceScreen>

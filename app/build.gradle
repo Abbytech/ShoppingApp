@@ -44,6 +44,7 @@ dependencies {
     })
     compile project(path: ':login')
     compile project(path: ':util')
+    compile project(path:':photoview')
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
     compile "com.android.support:design:$androidSupportVersion"
@@ -60,5 +61,6 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
+
     testCompile 'junit:junit:4.12'
 }
