@@ -27,4 +27,5 @@
     <string name="section_title_snacks">Snacks</string>
     <string name="section_title_bakery">Bakery</string>
     <string name="section_title_produce">Produce</string>
+    <string name="title_main_activity">What would you like to buy ?</string>
 </resources>

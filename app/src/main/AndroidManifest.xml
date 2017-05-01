@@ -18,7 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="What would you like to buy ?"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 

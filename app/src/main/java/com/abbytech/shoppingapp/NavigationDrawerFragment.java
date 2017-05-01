@@ -35,6 +35,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationView
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Toolbar appbar = (Toolbar) view.findViewById(R.id.appbar);
+        appbar.setTitle(R.string.title_main_activity);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(appbar);
 
