@@ -108,7 +108,6 @@ public class MainActivity extends SupportSingleFragmentActivity{
         if (zoneAlerts) {
             Intent service = new Intent(getApplicationContext(), ZoneAlertService.class);
             bindService(service, notificationServiceConnection, BIND_AUTO_CREATE);
-            getApplicationContext().startService(service);
             bound = true;
         }
     }

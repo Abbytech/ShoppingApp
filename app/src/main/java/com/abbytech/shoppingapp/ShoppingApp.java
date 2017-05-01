@@ -2,6 +2,8 @@ package com.abbytech.shoppingapp;
 
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.abbytech.login.android.BasicAccountManager;
@@ -16,7 +18,7 @@ import com.abbytech.shoppingapp.account.RegisterAdapter;
 import com.abbytech.shoppingapp.model.DaoMaster;
 import com.abbytech.shoppingapp.model.DaoSession;
 import com.abbytech.shoppingapp.notification.LocationAPI;
-import com.abbytech.shoppingapp.repo.ItemRepo;
+import com.abbytech.shoppingapp.notification.ZoneAlertService;
 import com.abbytech.shoppingapp.repo.LocalShoppingListRepo;
 import com.abbytech.shoppingapp.shop.ShopAPI;
 import com.abbytech.shoppingapp.shop.ShopRepo;
@@ -24,6 +26,7 @@ import com.abbytech.shoppingapp.shoppinglist.RemoteShoppingListRepo;
 import com.abbytech.shoppingapp.shoppinglist.ShoppingListAPI;
 import com.abbytech.shoppingapp.shoppinglist.ShoppingListRepo;
 import com.abbytech.shoppingapp.util.PropertiesLoader;
+import com.abbytech.shoppingapp.util.ServiceUtils;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.database.Database;
@@ -40,7 +43,6 @@ public class ShoppingApp extends Application {
     private static final String TAG = "ShoppingApp";
     private static ShoppingApp instance;
     private DaoSession daoMaster;
-    private ItemRepo itemRepo;
     private Retrofit retrofit;
 
     private ShopRepo shopRepo;
@@ -92,7 +94,6 @@ public class ShoppingApp extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "shopping-db");
         Database db = helper.getWritableDb();
         daoMaster = new DaoMaster(db).newSession();
-        itemRepo = null;
         retrofit = createRetrofit();
         shopRepo = new ShopRepo(retrofit.create(ShopAPI.class));
         shoppingListRepo = new ShoppingListRepo(new RemoteShoppingListRepo(retrofit.create(ShoppingListAPI.class)),
@@ -100,6 +101,16 @@ public class ShoppingApp extends Application {
         locationAPI = retrofit.create(LocationAPI.class);
         loginAdapter = createLoginAdapter();
         loginStateManager = new LoginStateManager<>(accountPersister, loginAdapter);
+        toggleZoneAlertService();
+    }
+
+    private void toggleZoneAlertService() {
+        SharedPreferences sp =
+                getSharedPreferences(getString(R.string.shared_prefs_settings), MODE_PRIVATE);
+        String key = getString(R.string.PREFS_KEY_ZONE_ALERTS);
+        boolean zoneAlerts = sp.getBoolean(key, false);
+        ServiceUtils.startStopService(this,
+                new Intent(this, ZoneAlertService.class), zoneAlerts);
     }
 
     private Retrofit createRetrofit() {
@@ -127,6 +138,7 @@ public class ShoppingApp extends Application {
         }
         return registerAdapter;
     }
+
     private OkHttpClient.Builder createClientBuilder() {
         accountPersister = new BasicAccountManager(this);
         basicAuthenticator = new BasicAuthenticator(accountPersister);
