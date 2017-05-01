@@ -1,59 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
+        android:background="#ffffff"
         android:paddingTop="56dp">
 
         <ImageView
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/logo"
+            android:id="@+id/imageView2"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"/>
 
         <EditText
             android:id="@+id/EditText_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="190dp"
+            android:layout_height="46dp"
             android:hint="@string/hint_email_address"
-            android:inputType="textEmailAddress"/>
+            android:textColorHint="#040F3E"
+            android:textSize="18dp"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="23dp"
+            android:layout_below="@+id/imageView2"
+            android:layout_centerHorizontal="true" />
 
         <EditText
             android:id="@+id/EditText_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="190dp"
+            android:layout_height="46dp"
             android:hint="@string/hint_username"
             android:imeOptions="actionNext"
-            android:inputType="text"/>
+            android:textSize="18dp"
+            android:textColorHint="#040F3E"
+            android:inputType="text"
+            android:layout_below="@+id/EditText_email"
+            android:layout_alignStart="@+id/EditText_email"
+            android:layout_marginTop="12dp" />
 
         <EditText
             android:id="@+id/EditText_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="190dp"
+            android:layout_height="46dp"
             android:hint="@string/hint_password"
             android:imeOptions="actionNext"
-            android:inputType="textPassword"/>
+            android:textSize="18dp"
+            android:textColorHint="#040F3E"
+            android:inputType="textPassword"
+
+            android:layout_below="@+id/EditText_username"
+            android:layout_alignStart="@+id/EditText_username"
+            android:layout_marginTop="12dp" />
 
         <EditText
             android:id="@+id/EditText_confirm_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="190dp"
+            android:layout_height="46dp"
             android:hint="@string/hint_confirm_password"
+            android:textColorHint="#040f3e"
             android:imeOptions="actionDone"
-            android:inputType="textPassword"/>
+            android:textSize="18dp"
+            android:inputType="textPassword"
+            android:layout_below="@+id/EditText_password"
+            android:layout_alignStart="@+id/EditText_password"
+            android:layout_marginTop="12dp" />
 
         <Button
             android:id="@+id/button_register"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/button_register"/>
-    </LinearLayout>
+
+            android:layout_width="246dp"
+            android:layout_height="55dp"
+            android:background="#e7921b"
+            android:textSize="18dp"
+            android:textColor="#040f3e"
+            android:textStyle="bold"
+            android:text="@string/button_register"
+            android:layout_marginStart="19dp"
+            android:layout_below="@+id/EditText_confirm_password"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="30dp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="40dp"
+            android:layout_height="70dp"
+            app:srcCompat="@mipmap/mailsymbol"
+            android:layout_alignTop="@+id/EditText_email"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/EditText_username" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:srcCompat="@mipmap/usergroup"
+            android:layout_alignStart="@+id/imageView3"
+            android:layout_toStartOf="@+id/imageView2"
+            android:layout_alignTop="@+id/EditText_username"
+            android:layout_alignEnd="@+id/imageView3"
+            android:layout_alignBottom="@+id/EditText_username" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:srcCompat="@mipmap/lock"
+            android:layout_alignBottom="@+id/EditText_password"
+            android:layout_alignStart="@+id/imageView7"
+            android:layout_toStartOf="@+id/imageView2"
+            android:layout_alignTop="@+id/EditText_password"
+            android:layout_alignEnd="@+id/imageView7" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:srcCompat="@mipmap/lock"
+            android:layout_alignBottom="@+id/EditText_confirm_password"
+            android:layout_alignTop="@+id/EditText_confirm_password"
+            android:layout_alignStart="@+id/imageView8"
+            android:layout_toStartOf="@+id/EditText_confirm_password"
+            android:layout_alignEnd="@+id/imageView8" />
+    </RelativeLayout>
 </layout>

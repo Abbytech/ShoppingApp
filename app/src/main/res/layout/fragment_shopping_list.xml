@@ -18,17 +18,22 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#ffffff">
 
         <TextView
-            android:layout_width="91dp"
-            android:layout_height="28dp"
-            android:text="Total Price : " />
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:text="Total Price : "
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="#040F3E"
+            android:layout_marginLeft="10dp"/>
 
         <TextView
             android:id="@+id/price_txt"
-            android:layout_width="88dp"
-            android:layout_height="15dp" />
+            android:layout_width="59dp"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>

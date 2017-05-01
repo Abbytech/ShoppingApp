@@ -12,6 +12,7 @@ import org.greenrobot.greendao.annotation.ToOne;
 @Entity
 public class ListItem {
     private Long quantity;
+
     @Id(autoincrement = true)
     private Long id;
     @SerializedName("item_ID")

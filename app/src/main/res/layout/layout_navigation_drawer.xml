@@ -24,7 +24,10 @@
                 android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:elevation="8dp"/>
+                app:elevation="8dp"
+                app:titleTextColor="#ffff"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                android:background="#e7921b"/>
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout

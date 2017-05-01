@@ -11,6 +11,7 @@
     android:layout_height="wrap_content"
     android:background="@{listItemView.selected?@android:color/holo_blue_light:@android:color/transparent}"
         android:orientation="horizontal"
+        android:layout_marginTop="16dp"
 
         >
 
@@ -19,29 +20,37 @@
         android:id="@+id/checkbox_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="@{listItemView.listItem.checked}" />
+        android:checked="@{listItemView.listItem.checked}"
+        android:textSize="18dp"
+            />
 
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="262dp"
+            android:layout_width="247dp"
         android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/checkbox_item"
             android:layout_alignBottom="@+id/checkbox_item"
             android:layout_toEndOf="@+id/linearLayout"
         android:text="@{listItemView.listItem.item.name}"
-        android:textColor="#504a4a" />
+        android:textColor="#040f3e"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            />
 
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="85dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/textView4"
             android:layout_alignBottom="@+id/textView4"
             android:layout_alignParentEnd="true"
             android:layout_weight="1"
-            android:text="@{String.valueOf(listItemView.listItem.quantity)}" />
+            android:text="@{String.valueOf(listItemView.listItem.quantity)}"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:textColor="#040F3E"/>
 
 
     </LinearLayout>
