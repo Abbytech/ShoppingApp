@@ -29,32 +29,40 @@ public class SearchFragment extends Fragment implements ItemActionEmitter<Item> 
     private ShopItemAdapter adapter;
     private ShopRepo shopRepo;
     private OnItemActionListener<Item> listener;
+    private String query;
 
     public void setQuery(String query) {
+        this.query = query;
         if (adapter != null) {
-            Observable<List<Item>> listObservable = shopRepo.getItemSearch(query)
-                    .observeOn(AndroidSchedulers.mainThread());
-            listObservable.subscribe(new Subscriber<List<Item>>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                }
-
-                @Override
-                public void onNext(List<Item> items) {
-                    if (items.isEmpty()) {
-                        Toast.makeText(ShoppingApp.getInstance(), "Item not found !!",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        adapter.setItemList(items);
-                    }
-                }
-            });
+            search(query);
+        } else {
+            this.query = query;
         }
+    }
+
+    private void search(String query) {
+        Observable<List<Item>> listObservable = shopRepo.getItemSearch(query)
+                .observeOn(AndroidSchedulers.mainThread());
+        listObservable.subscribe(new Subscriber<List<Item>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(List<Item> items) {
+                if (items.isEmpty()) {
+                    Toast.makeText(ShoppingApp.getInstance(), "Item not found !!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    adapter.setItemList(items);
+                }
+            }
+        });
     }
 
     @Override
@@ -80,5 +88,6 @@ public class SearchFragment extends Fragment implements ItemActionEmitter<Item> 
         adapter = new ShopItemAdapter(null);
         adapter.setOnItemActionListener(listener);
         recyclerView.setAdapter(adapter);
+        search(query);
     }
 }

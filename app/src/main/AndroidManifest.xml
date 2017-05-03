@@ -54,8 +54,7 @@
 
         <activity
             android:name=".settings.SettingsActivity"
-            android:label="Settings"
-            android:theme="@style/Base.Widget.AppCompat.Light.ActionBar">
+            android:label="Settings">
         </activity>
     </application>
 

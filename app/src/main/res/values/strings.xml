@@ -23,6 +23,7 @@
     <string name="PREFS_KEY_ZONE_ALERTS">ZONE_ALERTS</string>
     <string name="PREFS_KEY_OFFER_ALERTS">OFFER_ALERTS</string>
     <string name="PREFS_KEY_MISSED_ITEM_ALERTS">MISSED_ITEM_ALERTS</string>
+    <string name="PREFS_KEY_REMINDER_DELAY">REMINDER_MUTE_DURATION</string>
     <string name="section_title_dairy">Dairy</string>
     <string name="section_title_snacks">Snacks</string>
     <string name="section_title_bakery">Bakery</string>

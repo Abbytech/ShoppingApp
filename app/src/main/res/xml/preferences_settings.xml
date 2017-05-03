@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:id="@+id/switch_zone_alerts"
         android:defaultValue="true"
         android:key="@string/PREFS_KEY_ZONE_ALERTS"
         android:title="In-store zone alerts"/>
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="true"
+        android:dependency="@string/PREFS_KEY_ZONE_ALERTS"
         android:key="@string/PREFS_KEY_OFFER_ALERTS"
         android:title="Offer alerts"/>
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="true"
+        android:dependency="@string/PREFS_KEY_ZONE_ALERTS"
         android:key="@string/PREFS_KEY_MISSED_ITEM_ALERTS"
         android:title="Missed item alerts"/>
+    <SeekBarPreference
+        android:defaultValue="5"
+        android:key="@string/PREFS_KEY_REMINDER_DELAY"
+        android:title="reminder delay(minutes)"/>
 </PreferenceScreen>

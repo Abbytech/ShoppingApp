@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -16,6 +17,8 @@ import com.abbytech.shoppingapp.notification.NotificationData;
 import com.abbytech.shoppingapp.notification.NotificationFactory;
 import com.abbytech.shoppingapp.notification.ZoneAlertService;
 import com.abbytech.util.ui.SupportSingleFragmentActivity;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,9 +71,10 @@ public class MainActivity extends SupportSingleFragmentActivity{
                 AlertDialog dialog = createAndShowDialog(data.getTitle(), data.getBody());
                 dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
                         .setOnClickListener(v -> {
-                            // TODO: 23/04/2017 add settings option for reminder time
+                            int delayMinutes = getSettings()
+                                    .getInt(getString(R.string.PREFS_KEY_REMINDER_DELAY), 5);
                             zoneAlertService.muteRegion(missedItemsRegionData.getRegionStatus(),
-                                    5000/*TimeUnit.MINUTES.toMillis(5)*/);
+                                    TimeUnit.MINUTES.toMillis(delayMinutes));
                             dialog.dismiss();
                         });
             }
@@ -103,13 +107,17 @@ public class MainActivity extends SupportSingleFragmentActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        boolean zoneAlerts = getSharedPreferences(getString(R.string.shared_prefs_settings), MODE_PRIVATE)
+        boolean zoneAlerts = getSettings()
                 .getBoolean("ZONE_ALERTS", false);
         if (zoneAlerts) {
             Intent service = new Intent(getApplicationContext(), ZoneAlertService.class);
             bindService(service, notificationServiceConnection, BIND_AUTO_CREATE);
             bound = true;
         }
+    }
+
+    private SharedPreferences getSettings() {
+        return getSharedPreferences(getString(R.string.shared_prefs_settings), MODE_PRIVATE);
     }
 
     @Override
@@ -131,7 +139,7 @@ public class MainActivity extends SupportSingleFragmentActivity{
                     .setTitle(title)
                     .setMessage(message)
                     .setNegativeButton(R.string.dialog_button_mute_reminder, null)
-                    .setIcon(android.R.drawable.ic_popup_reminder).create();
+                    .setIcon(R.mipmap.ic_logo_dark).create();
             dialog.show();
         return dialog;
     }

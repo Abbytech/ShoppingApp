@@ -5,15 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.SeekBarPreference;
 import android.util.Log;
 
 import com.abbytech.shoppingapp.R;
 import com.abbytech.shoppingapp.notification.ZoneAlertService;
 
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private String TAG = SettingsFragment.class.getSimpleName();
 
@@ -26,6 +27,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         String sharedPreferencesName = preferenceManager.getSharedPreferencesName();
         Log.d(TAG, sharedPreferencesName);
         addPreferencesFromResource(R.xml.preferences_settings);
+        SeekBarPreference preference = (SeekBarPreference) preferenceManager.findPreference(getString(R.string.PREFS_KEY_REMINDER_DELAY));
+        preference.setMin(1);
+        preference.setMax(5);
+        preference.setSeekBarIncrement(1);
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
     }
 
     @Override

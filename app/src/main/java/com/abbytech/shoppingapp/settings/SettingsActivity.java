@@ -1,10 +1,11 @@
 package com.abbytech.shoppingapp.settings;
 
-import android.app.Fragment;
 
-import com.abbytech.util.ui.SingleFragmentActivity;
+import android.support.v4.app.Fragment;
 
-public class SettingsActivity extends SingleFragmentActivity {
+import com.abbytech.util.ui.SupportSingleFragmentActivity;
+
+public class SettingsActivity extends SupportSingleFragmentActivity {
 
     @Override
     protected Fragment getFragment() {

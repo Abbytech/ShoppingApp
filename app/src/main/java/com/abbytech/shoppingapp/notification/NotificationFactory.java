@@ -21,7 +21,8 @@ public class NotificationFactory {
     public static StringBuilder createString(List<ListItem> items) {
         StringBuilder message = new StringBuilder();
         for (ListItem listItem : items) {
-            message.append(listItem.getItem().getName()).append("\n");
+            String listItemString = String.format("%1$s x%2$d", listItem.getItem().getName(), listItem.getQuantity());
+            message.append(listItemString).append("\n");
         }
         return message;
     }
@@ -31,7 +32,8 @@ public class NotificationFactory {
                 data.getRegionStatus().getRegion().getUniqueId());
         StringBuilder message = new StringBuilder();
         for (Item offer : data.getOffers()) {
-            message.append(offer.getName()).append("\n");
+            String offerString = String.format("%1$s, %2$s", offer.getName(), offer.getPrice());
+            message.append(offerString).append("\n");
         }
         return new NotificationData(title, message.toString(), data.getRegionStatus());
     }

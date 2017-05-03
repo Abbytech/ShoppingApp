@@ -48,7 +48,7 @@ public class ZoneAlertService extends Service implements ServiceConnection {
             builder.setContentTitle(n.getTitle())
                     .setContentText(contentText)
                     .setVibrate(new long[]{0, 500, 250, 500})
-                    .setSmallIcon(R.drawable.ic_list_black_24dp);
+                    .setSmallIcon(R.drawable.ic_logo);
             NotificationCompat.InboxStyle inboxStyle =
                     new NotificationCompat.InboxStyle();
             inboxStyle.setSummaryText(contentText);
