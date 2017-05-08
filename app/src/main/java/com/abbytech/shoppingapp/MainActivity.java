@@ -1,11 +1,13 @@
 package com.abbytech.shoppingapp;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -22,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
 
 public class MainActivity extends SupportSingleFragmentActivity{
     private static final String TAG = "test";
@@ -83,7 +87,7 @@ public class MainActivity extends SupportSingleFragmentActivity{
 
     @Override
     public void onBackPressed() {
-        if (!onBackPressedListener.onBackPressed()) {
+        if (onBackPressedListener != null && !onBackPressedListener.onBackPressed()) {
             super.onBackPressed();
         }
     }
@@ -113,6 +117,11 @@ public class MainActivity extends SupportSingleFragmentActivity{
             Intent service = new Intent(getApplicationContext(), ZoneAlertService.class);
             bindService(service, notificationServiceConnection, BIND_AUTO_CREATE);
             bound = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                String permission = "android.permission.ACCESS_FINE_LOCATION";
+                if (PERMISSION_DENIED == checkSelfPermission(permission))
+                    requestPermissions(new String[]{permission, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+            }
         }
     }
 

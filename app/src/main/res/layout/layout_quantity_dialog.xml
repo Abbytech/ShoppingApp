@@ -8,25 +8,23 @@
         android:id="@+id/dialog_label"
         android:layout_width="200dp"
         android:layout_height="35dp"
-        android:text="Please select an quantity"
+        android:text="Please select quantity"
         android:textAlignment="center"
         android:textColor="#e7921b"
         android:textSize="15dp"
         android:textStyle="bold"
-
-
         />
 
     <Spinner
         android:id="@+id/dialog_spinner"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:scrollbarSize="20dp"
-        style="@style/TextAppearance.AppCompat.Medium"
-
-
         android:layout_alignParentStart="true"
+
+
         android:layout_alignParentTop="true"
-        android:entries="@array/quantity" />
+        android:entries="@array/quantity"
+        android:scrollbarSize="20dp"/>
 
 </LinearLayout>

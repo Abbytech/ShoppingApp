@@ -48,7 +48,7 @@ public class ShopController extends ActionController<Item> implements OnShopItem
                 })
 
                 .setNegativeButton(
-                        "Cancell",
+                        "Cancel",
                         (dialog, id) -> dialog.dismiss());
 
         AlertDialog alert11 = builder1.create();

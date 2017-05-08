@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class MapFragment extends Fragment {
@@ -91,12 +92,25 @@ public class MapFragment extends Fragment {
         photoView.setMinimumScale(0.75F);
         final PhotoViewAttacher attacher = photoView.getAttacher();
         Observable.timer(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> {
-                    photoView.setScale(photoView.getMinimumScale());
-                    attacher.setPinchDisabled(true);
-                    layoutSections();
-                    Log.d(TAG, "actual width=" + attacher.getActualWidth());
-                    Log.d(TAG, "actual height=" + attacher.getActualHeight());
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        photoView.setScale(photoView.getMinimumScale());
+                        attacher.setPinchDisabled(true);
+                        layoutSections();
+                        Log.d(TAG, "actual width=" + attacher.getActualWidth());
+                        Log.d(TAG, "actual height=" + attacher.getActualHeight());
+                    }
                 });
 
 

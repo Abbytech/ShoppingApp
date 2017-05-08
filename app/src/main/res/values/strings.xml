@@ -5,7 +5,7 @@
     <string name="title_shop">Shop</string>
     <string name="title_map">Store map</string>
     <string name="action_search">Search everything</string>
-    <string name="base_url">http://shoppingapp20170328063139.azurewebsites.net/</string>
+    <string name="base_url">http://shoppingapp2.azurewebsites.net/</string>
     <string name="cancel">cancel</string>
     <string name="ok">ok</string>
 
@@ -28,5 +28,5 @@
     <string name="section_title_snacks">Snacks</string>
     <string name="section_title_bakery">Bakery</string>
     <string name="section_title_produce">Produce</string>
-    <string name="title_main_activity">What would you like to buy ?</string>
+    <string name="title_main_activity">What would you like to buy?</string>
 </resources>
